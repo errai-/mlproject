@@ -1,0 +1,19 @@
+colorVoter.m: A final script for determining the color in test dataset
+colorVoterRef.m: A script for testing the methods using only the training data
+These use voting - kNN, logistic discrimination, random forest
+
+The three methods separately:
+discrWines.m: logistic discrimination
+like.m: logistic likelihood and its derivative
+
+tree.m: random forest
+
+realkNNWines.m: naive kNN
+varDist.m: calculates normalized distance
+
+Others:
+naiveWines.m: naive discrimination using only the density, Gaussian
+gaussWines.m: naive discrimination, using all parameters (assumed Gaussian)
+logDiscrGauss.m: discriminant for the gaussian discr.
+logDiscrNaive.m: discriminant for the naive discr.
+

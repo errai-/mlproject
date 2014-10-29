@@ -1,0 +1,26 @@
+rankVote.m: determines the ranking using random forest and slightly a neural
+network
+tester.m: a slow script for testing the success of the method in training
+dataset
+
+Primary ideas:
+
+tree.m: random forest
+
+nn.m: neural network
+
+moar.m: a script for determining a and b for the voting between tree and nn
+
+Failed ideas:
+kNNrank.m, kNNWines.m, classif.m, varDist.m:
+kNN-related things
+
+discrRank.m, discrRankQuadr.m: discriminative ranking
+
+gaussWines.m, logDiscrGauss.m: ranking assuming gaussian behavior
+
+somap.m: self-organizing map
+
+svm.m: support vector machine
+
+oldlike.m: likelihood-things

@@ -1,0 +1,5 @@
+Folders contain files for the report and separately files for classification/
+regression of wine type and quality.
+
+eval*.m are simple scripts for counting the f_score
+
