@@ -37,6 +37,9 @@
 \usepackage{algpseudocode}
 \usepackage{algorithm}
 
+\newcommand{\todo}[1]{\textbf{TODO(#1)}}
+\renewcommand{\v}[1]{\vec{#1}}
+
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
@@ -93,7 +96,29 @@ The following machine learning methods were used in the evaluated algorithms.
 
 \subsection{Gaussian discriminant}
 
-\subsection{$k$-nearest neighbours}
+\subsection{$k$ nearest neighbours}
+
+The $k$ nearest neighbours classifier is a non-parametric classifier. Only a
+distance function between points and a set of pre-classified points is required.
+The classification given by $k$ nearest neighbours for a new point $x$ is then found by simply
+selecting the $k$ points closest to $x$ according to the distance function and
+picking the most common class among the $k$ points.
+
+\todo{kaava?}
+
+Selecting a good distance function is important. The distributions of the
+input variables vary greatly. When using the Euclidean distance function,
+this causes certain variables to have a greater effect on the distance between
+points when compared to others. To prevent this, we used the Mahalanobis
+distance function\todo{cite}:.
+
+\begin{equation}\label{eq:mahalanobis}
+  D_M(\v{x}, \v{y}) = \sqrt{(\v{x}-\v{y})^T S^{-1} (\v{x}-\v{y})}
+\end{equation}
+
+where $S$ is the covariance matrix for the 
+distribution $\v{x}$ and $\v{y}$ are taken from.
+This normalizes the distance for the shape of the distribution.
 
 \subsection{Random forest}
 
