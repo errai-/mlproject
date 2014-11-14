@@ -89,7 +89,21 @@ The color of each wine is either red or white and the quality is an integer betw
 
 \section{Methods}
 
-Any knowledge about chemistry was not used.
+The following machine learning methods were used in the evaluated algorithms.
+
+\subsection{Gaussian discriminant}
+
+\subsection{$k$-nearest neighbours}
+
+\subsection{Random forest}
+
+Klassifikaatio ja regressio.
+
+\subsection{Linear discriminant}
+
+\subsection{Quadratic discrimination}
+
+\subsection{Least squares}
 
 %\begin{figure}[H]
 %\centering
@@ -102,17 +116,56 @@ Any knowledge about chemistry was not used.
 
 \section{Experiments}
 
-\begin{table}[H]
-\caption{My current knowledge of tables}
-\centering
-\begin{tabular}{cc}
-\textbf{Table type} & \textbf{Likely location}\\
-\midrule
-Coffee table & Living room\\
-Dining table & Dining room\\
-Bedside table & Bedroom
-\end{tabular}
-\end{table}
+\subsection{Algorithm evaluation}
+
+Algorithms were evaluated separately on the two problems: predicting wine color and quality.
+Both output variables are predicted using the 11 chemical characteristics. Color isn't used
+as a predictor for quality or vice versa.
+Some algorithms were evaluated with both problems while other ones were only applied to one.
+Knowledge about chemistry was not used; the problems are treated purely as machine learning
+problems.
+
+For evaluating algorithms predicting the wine color, a simple scoring method was used.
+There are only two classes, so the amount of classification errors was used as a quality indicator.
+For wine quality, there are seven classes, so a more complex indicator was used. \emph{ADD HERE}
+
+\subsection{Color prediction}
+
+\subsubsection{Naive logarithmic discriminant}
+
+\subsubsection{Gaussian logarithmic discriminant}
+
+\emph{MENTION PCA}
+
+\subsubsection{Linear discriminant}
+
+\subsubsection{Random forest}
+
+\subsubsection{$k$-nearest neighbours}
+
+\subsection{Quality prediction}
+
+\subsubsection{Linear discriminant}
+
+\subsubsection{Support vector machine}
+
+\subsubsection{Random forest}
+
+\subsubsection{$k$-nearest neighbours}
+
+\subsubsection{Least squares}
+
+% \begin{table}[H]
+% \caption{My current knowledge of tables}
+% \centering
+% \begin{tabular}{cc}
+% \textbf{Table type} & \textbf{Likely location}\\
+% \midrule
+% Coffee table & Living room\\
+% Dining table & Dining room\\
+% Bedside table & Bedroom
+% \end{tabular}
+% \end{table}
 
 %------------------------------------------------
 
