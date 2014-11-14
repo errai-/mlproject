@@ -93,8 +93,30 @@ The color of each wine is either red or white and the quality is an integer betw
 \section{Methods}
 
 The following machine learning methods were used in the evaluated algorithms.
+Method validation was done using $k$-fold validation with $k = 10$,
+that is, 10\% of the training set was reserved for validation, and validation
+was done ten times, once for each partitioning into training and validation sets.
 
 \subsection{Gaussian discriminant}
+
+The gaussian discriminant determines the class of a sample by
+comparing the probabilities of it belonging to each class, when each
+class is modelled using a multivariate Gaussian distribution.
+
+The Gaussian distributions are determined based on training data.
+The mean vector $\v{\mu}$ and covariance matrix $\Sigma$ are calculated for each class.
+The probability of a sample $x$ belonging to the class can the be calculated
+using the multivariate Gaussian probability density function:
+
+\begin{equation}
+ p(\v{x}) = \frac{1}{\sqrt{2\pi} |\Sigma|}e^{-\frac{1}{2}(\v{x}-\v{\mu})^T \Sigma^{-1} (\v{x}-\v{\mu})}
+\end{equation}
+
+The class with the highest $p(\v{x})$ is then selected. In the case of two classes,
+this can be simplified by setting
+$p'(\v{x}) = \log \frac{p(\v{x},\theta_1)}{p(\v{x},\theta_2}$.
+The value of $p'(\v{x})$ is then positive if $\v{x}$ is classified into class 1,
+and negative if into class 2. 
 
 \subsection{$k$ nearest neighbours}
 
@@ -103,8 +125,6 @@ distance function between points and a set of pre-classified points is required.
 The classification given by $k$ nearest neighbours for a new point $x$ is then found by simply
 selecting the $k$ points closest to $x$ according to the distance function and
 picking the most common class among the $k$ points.
-
-\todo{kaava?}
 
 Selecting a good distance function is important. The distributions of the
 input variables vary greatly. When using the Euclidean distance function,
@@ -144,7 +164,7 @@ Klassifikaatio ja regressio.
 \subsection{Algorithm evaluation}
 
 Algorithms were evaluated separately on the two problems: predicting wine color and quality.
-Both output variables are predicted using the 11 chemical characteristics. Color isn't used
+Both output variables are predicted using the 11 chemical characteristics. Color wasn't used
 as a predictor for quality or vice versa.
 Some algorithms were evaluated with both problems while other ones were only applied to one.
 Knowledge about chemistry was not used; the problems are treated purely as machine learning
