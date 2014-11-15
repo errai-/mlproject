@@ -6,7 +6,7 @@
 winefacts = readtable('../training_dataset.csv');
 winetests = readtable('../test_dataset.csv');
 
-tra=4500; val=500; tes = 100;
+tra=4500; val=500; tes=1000;
 
 % Naive priors
 priorDiscr = 1/3; priorNN = 1/3; priorForest = 1/3;
@@ -18,7 +18,7 @@ priorDiscr = 1/3; priorNN = 1/3; priorForest = 1/3;
 % 10-fold cross-validation %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-errs = 1:10; derrs = 1:10; kerrs = 1:10; terrs = 1:10; opterrs = 1:10; lerrs = 1:10; ferrs = 1:10;
+errs = 1:10; opterrs = 1:10; lerrs = 1:10; ferrs = 1:10;
 X1 = 1:10; X2 = 1:10;
 
 alld=zeros(val,10);allk=zeros(val,10);allt=zeros(val,10);allc=zeros(val,10);
@@ -40,7 +40,7 @@ for h=1:10
     [dclass,diskrProbs]=predict(diskr,valid(:,1:11));
     
     % kNN, k=1 or k=3
-    kNN = fitcknn(traing(:,1:11),traing(:,12),'Distance','mahalanobis','NumNeighbors',1);
+    kNN = fitcknn(traing(:,1:11),traing(:,12),'Distance','mahalanobis','NumNeighbors',3);
     [kclass,knnProbs]=predict(kNN,valid(:,1:11));
     
     % Random forest 30
@@ -54,9 +54,6 @@ for h=1:10
     allc(:,h)=valid(:,12);
     
     % Standard errors
-    derrs(h) = sum( round(diskrProbs(:,2)) ~= valid(:,12) )/val;
-    kerrs(h) = sum( round(knnProbs(:,2)) ~= valid(:,12) )/val;
-    terrs(h) = sum( round(treeProbs(:,2)) ~= valid(:,12) )/val;
     errs(h) = sum( round(priorDiscr*diskrProbs(:,2) + priorNN*knnProbs(:,2) + priorForest*treeProbs(:,2)) ~= valid(:,12) )/val;
     lerrs(h) = sum( round(l1*diskrProbs(:,2) + l2*knnProbs(:,2) + l3*treeProbs(:,2)) ~= valid(:,12) )/val;
     ferrs(h) = sum( round(f1*diskrProbs(:,2) + f2*knnProbs(:,2) + f3*treeProbs(:,2)) ~= valid(:,12) )/val;
@@ -70,7 +67,6 @@ end
 %l1 = mean(X1); l2 = mean(X2); l3 = 1-l1-l2; f1 = z1m; f2 = z2m; f3 = 1-f1-f2;
 
 % Output errors
-[mean(derrs),mean(kerrs),mean(terrs)] % Single errors
 [mean(errs),mean(lerrs),mean(ferrs),mean(opterrs)] % coeffs: 
 % equal, mean from loop, and afterwards, minimal possible error for each h
 
@@ -86,7 +82,7 @@ testing = [table2array(winetests(:,1:11)), strcmp(winetests.type, 'Red')];
 % Linear discriminant
 diskr = fitcdiscr(training(:,1:11),training(:,12),'DiscrimType','Linear');
 % kNN, k=1 or k=3
-kNN = fitcknn(training(:,1:11),training(:,12),'Distance','mahalanobis','NumNeighbors',1); 
+kNN = fitcknn(training(:,1:11),training(:,12),'Distance','mahalanobis','NumNeighbors',3); 
 % Random forest
 BaggedTreeEns = TreeBagger(200,training(:,1:11),training(:,12),'NVarToSample',2);
 
@@ -104,5 +100,5 @@ lpredikt = round(l1*diskrProbs(:,2) + l2*knnProbs(:,2) + l3*treeProbs(:,2));
 fpredikt = round(f1*diskrProbs(:,2) + f2*knnProbs(:,2) + f3*treeProbs(:,2));
 
 % errors: (lpredikt is usually the best, fpredikt almost equal)
-[sum(predikt~=testing(:,12)),sum(lpredikt~=testing(:,12)),sum(fpredikt~=testing(:,12))]
+[sum(predikt~=testing(:,12)),sum(lpredikt~=testing(:,12)),sum(fpredikt~=testing(:,12))]/tes
 [l1,l2,f1,f2]
