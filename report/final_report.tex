@@ -82,11 +82,12 @@ The goal of this project is to compare the strengths and weaknesses of different
 and statistical modelling algorithms in a practical situation. Both regression and classification
 algorithms are evaluated.
 
-The dataset that is used to evaluate algorithms is the so called ``Vinho verde'' dataset by Cortez et al\cite{CorCer09}.
-The dataset consists of 1000 observations, each describing an individual wine. For each wine, 11 variables are provided:
+The dataset that is used to evaluate algorithms is derived from the so called ``Vinho verde'' dataset by Cortez et al\cite{CorCer09}.
+The dataset consists of 6000 observations, each describing an individual wine. For each wine, 11 variables are provided:
 fixed acidity, volatile acidity, amounts of citric acid, residual sugar, chlorides, free sulfur diodixe, total sulfur dioxide,
 density, pH, and amount of alcohol in the wine. These variables are used to predict the wine's color and quality.
-The color of each wine is either red or white and the quality is an integer between 1 and 7.
+The color of each wine is either red or white and the quality is an integer between 1 and 7. 5000 observations are used as
+training data, while the other 1000 are reserved for testing.
 
 %------------------------------------------------
 
@@ -114,7 +115,7 @@ using the multivariate Gaussian probability density function:
 
 The class with the highest $p(\v{x})$ is then selected. In the case of two classes,
 this can be simplified by setting
-$p'(\v{x}) = \log \frac{p(\v{x},\theta_1)}{p(\v{x},\theta_2}$.
+$p'(\v{x}) = \log \frac{p(\v{x},\theta_1)}{p(\v{x},\theta_2)}$.
 The value of $p'(\v{x})$ is then positive if $\v{x}$ is classified into class 1,
 and negative if into class 2. 
 
@@ -130,13 +131,13 @@ Selecting a good distance function is important. The distributions of the
 input variables vary greatly. When using the Euclidean distance function,
 this causes certain variables to have a greater effect on the distance between
 points when compared to others. To prevent this, we used the Mahalanobis
-distance function\todo{cite}:.
+distance function\cite[p.~88]{Alpaydin}:
 
 \begin{equation}\label{eq:mahalanobis}
-  D_M(\v{x}, \v{y}) = \sqrt{(\v{x}-\v{y})^T S^{-1} (\v{x}-\v{y})}
+  D_M(\v{x}, \v{y}) = \sqrt{(\v{x}-\v{y})^T \Sigma^{-1} (\v{x}-\v{y})}
 \end{equation}
 
-where $S$ is the covariance matrix for the 
+where $\Sigma$ is the covariance matrix for the 
 distribution $\v{x}$ and $\v{y}$ are taken from.
 This normalizes the distance for the shape of the distribution.
 
@@ -148,7 +149,33 @@ Klassifikaatio ja regressio.
 
 \subsection{Quadratic discriminant}
 
-\subsection{Least squares}
+\subsection{Linear least squares}
+
+The linear (or ordinary) least squares is a regression method that attempts to
+find the input variable coefficients for a linear function that predicts the desired variables.
+Essentially, this means finding an approximate solution for $\v{x}$ in
+
+\begin{equation*}
+ A\v{x} = \v{b}
+\end{equation*}
+
+where $A$ contains the predictor variables and $\v{b}$ the predicted variable observations
+in the training data. The learned $\v{x}$ can then be used to make predictions when encountering
+new observations.
+
+The linear least squares method finds the approximate solution by minimizing the error measure
+
+\begin{equation}
+ S(\v{x}) = \sum_{i=1}^n (\v{b} - A_i \v{x})^2
+\end{equation}
+
+where $n$ is the number of training observations. This measure is minimized by
+
+\begin{equation}
+ \v{x} = (A^T A)^{-1} A^T b.
+\end{equation}
+
+\todo{tähän vissiin vähän tarkemmin}
 
 %\begin{figure}[H]
 %\centering
