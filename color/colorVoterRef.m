@@ -12,8 +12,12 @@ priorNN = NN/(disc+NN+forest);
 priorForest = forest/(disc+NN+forest);
 
 errs = 1:10;
+opterrs = 1:10;
+X1 = 1:10; X2 = 1:10;
 options = optimoptions('fminunc','GradObj','on'); % indicate gradient is provided
 options.MaxIter = 1000;
+
+probcoeffs = 1:20;
 
 for h=1:10
     lower = 1+500*(h-1); upper = 500*h;
@@ -55,8 +59,8 @@ for h=1:10
             nearVote(ind+1:end) = nearVote(ind:end-1);
             nearVote(ind) = traing(k,12);
         end
-        samus = sum(nearVote);
-        if (samus == Inf)
+        cumulation = sum(nearVote);
+        if (cumulation == Inf)
             rednessRes(j)=0;
             errorLog = errorLog+1;
         else
@@ -67,6 +71,22 @@ for h=1:10
     BaggedTreeEns = TreeBagger(30,traing(:,1:11),traing(:,12),'NVarToSample',3);
     [gresults,gprobs]=predict(BaggedTreeEns,testng(:,1:11));
     
+    % Standard errors
     errs(h) = sum(abs( ((priorDiscr*rpredict + priorNN*rednessRes + priorForest*gprobs(:,2)) > 0.5) - testng(:,12)))/val;
+    opterrs(h) = sum(abs( ((l1*rpredict + l2*rednessRes + l3*gprobs(:,2)) > 0.5) - testng(:,12)))/val;
+    %x1m = 0; x2m = 0;
+    %tmpErr = 100000;
+    %[x1m,x2m,tmpErr]=optimumCoeff(rpredict,rednessRes,gprobs(:,2),testng(:,12),0.1,0.2,0.8,0.2,0.8);
+    %[x1m,x2m,tmpErr]=optimumCoeff(rpredict,rednessRes,gprobs(:,2),testng(:,12),0.01,max(0.01,x1m-0.09),min(0.99,x1m+0.09),max(0.01,x2m-0.09),min(x2m+0.09,0.99));
+    %[x1m,x2m,tmpErr]=optimumCoeff(rpredict,rednessRes,gprobs(:,2),testng(:,12),0.01,0.01,0.99,0.01,0.99);
+    %[x1m,x2m,tmpErr]=optimumCoeff(rpredict,rednessRes,gprobs(:,2),testng(:,12),0.001,max(0.001,x1m-0.009),min(0.999,x1m+0.009),max(0.001,x2m-0.009),min(x2m+0.009,0.999));
+    %opterrs(h) = tmpErr/val;
+    %x1m
+    %x2m
+    %X1(h)=x1m;
+    %X2(h)=x2m;
+    %1-x1m-x2m
+    %errs(h)
+    %opterrs(h)
 end
 mean(errs)
