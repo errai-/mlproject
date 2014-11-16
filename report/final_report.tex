@@ -44,6 +44,8 @@
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
 
+% TODO: otsikosta saa 2/40 p, voi ansaita hiontaa kun työ on pidemmmällä. 
+
 \title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{Predicting wine color and quality using chemical characteristics}}
 
 \author{
@@ -65,8 +67,9 @@
 %----------------------------------------------------------------------------------------
 
 \begin{abstract}
+% TODO: myöskin 2/40 p, 100-200 sanaa
 
-\noindent Katsoppas uudestaan. Utsoppas kaadestaan.
+\noindent Katsoppas uudestaan. Utsoppas kaadestaan. Sas.
 
 \end{abstract}
 
@@ -77,21 +80,52 @@
 \begin{multicols}{2} % Two-column layout throughout the main article text
 
 \section{Introduction}
+% 4/40 p
 
-The goal of this project is to compare the strengths and weaknesses of different machine learning
-and statistical modelling algorithms in a practical situation. Both regression and classification
-algorithms are evaluated.
+The goal of this study is to predict the type and the quality of a wine by making use of a given dataset.
+This is realized by comparing the strengths and weaknesses of different machine learning 
+and statistical modelling algorithms when applied to the present data. According to the performance of 
+different methods, optimized learning algorithms are revised.
+ 
+All possible algorithms cannot be reasonably equipped for these analyses. Nevertheless,
+a decent variety of methods is used. For a randomly chosen dataset this is important since according to
+the \emph{No Free Lunch Theorem} (Wolpert, 1995), there is no simple way to predetermine, which
+learning algorithm is most compatible with the data. In other words, it can be difficult to assess
+without trial, which method has an inductive bias that corresponds to the data best.
+The algorithms are chosen heeding to diversity and using some initial hypotheses. 
 
-The dataset that is used to evaluate algorithms is derived from the so called ``Vinho verde'' dataset by Cortez et al\cite{CorCer09}.
-The dataset consists of 6000 observations, each describing an individual wine. For each wine, 11 variables are provided:
-fixed acidity, volatile acidity, amounts of citric acid, residual sugar, chlorides, free sulfur diodixe, total sulfur dioxide,
-density, pH, and amount of alcohol in the wine. These variables are used to predict the wine's color and quality.
-The color of each wine is either red or white and the quality is an integer between 1 and 7. 5000 observations are used as
-training data, while the other 1000 are reserved for testing.
+The dataset that is used to evaluate algorithms is derived from the so called \emph{Vinho verde} dataset by Cortez et al. \cite{CorCer09}.
+It consists of 6000 observations, each describing an individual wine. For each one of them, 11 variables are provided in addition
+to the type and quality: fixed acidity, volatile acidity, density, pH and amounts of citric acid, residual sugar, chlorides, 
+free sulfur diodixe, total sulfur dioxide, sulphates and alcohol in the wine. The type of each wine is either red or white 
+and the quality is an integer between 1 and 7. 5000 observations are used as training data, while the other 1000 are reserved for testing.
+ 
+For the sake of variety, the performance of both regression and classification algorithms is evaluated.
+However, the focus is on classification algorithms - to some extent since it is more straightforward to compare the 
+performance of classification models. Moreover, both the determination of the type and the quality can be considered
+as classification problems, but only the quality can be studied also with regression. It is obvious that
+there is some correlation between neighboring classes, that is qualities that differ by one point. This makes
+regression favorable, but on the other hand the integer presentation of the quality makes regression somewhat cumbersome.
 
-%------------------------------------------------
+Wine data are in general a favored object for study in the field of machine learning. There have been various studies
+on the subject, for instance those of Cortez et al. \cite{WQA}, \cite{CorCer09} 
+and Appalsamy et al. \cite{Appalsami}. One motive for this are the large and growing markets of wine industry.
+The prediction of the quality of a wine without a need for a wine taster as well as a deeper understanding of the 
+properties of a good wine include much potential for profit. On the other hand predicting the quality of a wine is 
+intriguing from the point of view of machine learning. The quality is determined by the human taste, which is 
+very complex and may be hard to predict only by using some of the chemical properties. There is also a lot of wine data available 
+on the internet, which may partially explain the popularity.
 
+This task is interesting, since the type and the quality are to be analyzed: a physical property and an abstract property determined
+by human taste. The former should be easily predictable assuming that a sufficient amount of chemical
+properties is given, but the prediction of the latter can be a challenging task. In general, these kinds of
+hard problems are often the ones that are good for benchmark testing of machine learning algorithms. On the other
+hand, with such problems there is a large interest for decently working prediction algorithms, since prior
+to sufficient computational power and methods they have been insolvable. Thus, this study makes a good review of
+modern learning algorithms when applied to a complex dataset.
+ 
 \section{Methods}
+% 8/40 p
 
 The following machine learning methods were used in the evaluated algorithms.
 Method validation was done using $k$-fold validation with $k = 10$,
