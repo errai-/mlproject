@@ -239,12 +239,35 @@ within the $k$ nearest neighbours is $k_c$, the probability is simply
  p(\v{x}) = \frac{k_c}{k}.
 \end{equation}
 
+\subsubsection{Linear discrimination}
+
+The methods that rely on discrimination model directly the class discriminants instead of
+the class probabilities. In linear discrimination the discriminant for a class $k$ is linear:
+\begin{equation}
+ g_k(\v{x}) = \v{w}_k^T v{x} + w_{k0}.
+\end{equation}
+The basic theory of linear discrimination is not deeper than this: the goal is to find such
+coefficients $\v{w}_k$, $w_{k0}$ that the classification error is minimal. Usually this has
+to be done numerically for instance with the steepest descent algorithm. There are multiple 
+ways to perform the optimization. One example
+is logistic discrimination, in which the class probabilities are defined by a connection to the class
+probabilities. The discriminant of a class $k$ is a logarithm of the fraction of the likelihood of
+this class divided by the likelihood of a reference class. This definition gives some convenient 
+properties for the model from the viewpoint of numerical solutions. However, also other
+approaches may be used.
+
+\subsubsection{Quadratic discrimination}
+
+Quadratic discrimination is otherwise similar to linear discrimination, but it equips a quadratic discriminant,
+\begin{equation}
+ g_k(\v{x}) = \v{x}^T \mathbf{W}_k \v{x} + \v{w}_k^T \v{x} + w_{k0}.
+\end{equation}
+Because of the quadratic form, the search for optimal discriminants is much more complicated than with linear
+discriminants. Additionally, the additional complexity brought by the quadratic form may be unnecessary.
+Nevertheless, quadratic discrimination provides a good algorithm for comparison, if an efficient algorithm
+for it is available.
+
 \subsubsection{Support vector machine}
-
-
-\subsubsection{Linear discriminant}
-
-\subsubsection{Quadratic discriminant}
 
 
 \subsubsection{Random forest}
@@ -282,6 +305,22 @@ This is a usuful form, since it can be used for an arbitrary matrix $\mathbf{X}$
 $\mathbf{X}$ may hold only the given variables in a basic form, but also for instance higher
 exponents of the variables can be inserted into this matrix. Thus, it is relatively simple
 to control the complexity of this model.
+
+\subsection{Combining learners}
+
+If many different learners with approximately equal performance are found, it is instructive
+to combine these learners to boost performance. For this, many kinds of algorithms can be used
+but in this work a simple approach is taken. It is assumed that maximally three very good
+learning algorithms are chosen for the final model. With these algorithms, the probabilities
+of each class are calculated for each sample in the validation or testing set. The probabilities
+are denoted with $P_1$, $P_2$ and $P_3$ and they are given weights $w_1$, $w_2$ and $w_3$.
+The weights are normalized so that $w_1 + w_2 + w_3 = 1$. Thus the final probability is given by
+\begin{equation}
+ P = w_1 ( P_1 - P_3 ) + w_2 ( P_2 - P_3 ) + P_3.
+\end{equation}
+Because of the normalization condition and assumption that the weights are greater than zero,  $0 \leq w_1,w_2 \leq$ and $w_1 + w_2 \leq 1$. 
+An approximate solution can be found by scanning the possible values of $w_1$ and $w_2$ on a lattice with a spacing of $0.01$.
+The best values are chosen by validation.
 
 %\begin{figure}[H]
 %\centering
@@ -359,8 +398,6 @@ Validation is done ten times using each partition once as a validation set, whil
 sections function as training sets. The mean error of the 10 validations functions as a measure
 of goodness of an algorithm. This is beneficial for choosing between different algorithms or
 between parameter values with a single algorithm.
-
-\subsection{Combining learners}
 
 \section{Results}
 
