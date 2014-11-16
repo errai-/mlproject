@@ -81,6 +81,9 @@
 
 \section{Introduction}
 % 4/40 p
+% Introduces the reader to the topic and the broad context within which the research fits
+% Why is the task important, what question is being addressed, what is hoped to learn?
+% Literature review
 
 The goal of this study is to predict the type and the quality of a wine by making use of a given dataset.
 This is realized by comparing the strengths and weaknesses of different machine learning 
@@ -127,43 +130,92 @@ good review of the features of modern machine learning algorithms when applied t
  
 \section{Methods}
 % 8/40 p
+% Methods used to conduct your experiment
+% Concept-level: Methods/algos and modifications to these
 
-The following machine learning methods were used in the evaluated algorithms.
-Method validation was done using $k$-fold validation with $k = 10$,
-that is, 10\% of the training set was reserved for validation, and validation
-was done ten times, once for each non-overlapping partitioning into training and validation sets.
+For predicting the behavior of the wine data, many machine learning methods are equipped.
+To some extent the same classification algorithms are used with minor differences for both
+the analysis of the type and the analysis of the quality of wines. On top of this, to augur the 
+quality, some regression algorithms are utilized. The basic properties of the used algorithms
+are described in this section. The theoretical background of most of the algorithms can be found
+in a basic reference, such as Ref. \cite{Alpaydin}. 
 
-\subsection{Gaussian discriminant}
+\subsection{Classification}
 
-The gaussian discriminant determines the class of a sample by
-comparing the probabilities of it belonging to each class, when each
-class is modelled using a multivariate Gaussian distribution.
+\subsubsection{Naive Gaussian discrimination}
 
-The Gaussian distributions are determined based on training data.
-The mean vector $\v{\mu}$ and covariance matrix $\Sigma$ are calculated for each class.
-The probability of a sample $x$ belonging to the class can the be calculated
-using the multivariate Gaussian probability density function:
-
+While taking initial steps with a dataset, it is usually instructive to begin with a simple
+learning algorithm. At the simplest, this could mean using a model that returns a constant value or
+class. A slightly more complicated simple model is provided byt using only one of the eleven variables
+given in the data. The initial hypothesis is that for some of the parameters, all classes are somewhat
+normally distributed for this variable $x$. It follows that by calculating the mean value 
+$\mu$ and variance $\sigma^2$ of each class using the training set, the probability distributions of 
+each class $k$ is obtained:
 \begin{equation}
- p(\v{x}) = \frac{1}{\sqrt{2\pi} |\Sigma|}e^{-\frac{1}{2}(\v{x}-\v{\mu})^T \Sigma^{-1} (\v{x}-\v{\mu})}
+ p(x|\mu_k,\sigma_k) = \frac{1}{\sqrt{2\pi} \sigma_k} e^{-\frac{(x-\mu_k)^2}{2\sigma_k^2}}.
+\end{equation}
+This can be used directly as a likelihood function for the different classes or a Bayesian posterior
+can be taken:
+\begin{equation}\label{posterior}
+ p(\mu_k,\sigma_k|x) \propto p(x|\mu_k,\sigma_k) p(\mu_k,\sigma_k),
+\end{equation}
+where $p(\mu_k,\sigma_k) = p(\theta_k)$ is simply obtained as the fraction of the class $k$ in the 
+training set. This can be transformed conveniently into a discriminant, by choosing a reference
+class $j = k$:
+\begin{equation}\label{naiividiskr}
+ g_k(x) = \log \frac{p(\mu_k,\sigma_k|x)}{p(\mu_j,\sigma_j|x)}.
+\end{equation}
+The maximal $g_k(x)$ indicates the predicted class $k$. By simplifying Eq. \eqref{naiividiskr},
+it is obtained
+\begin{equation}\label{naiividiskr2}
+ g_k(x) = \frac{(x-\mu_j)^2}{2\sigma_k^2}-\frac{(x-\mu_k)^2}{2\sigma_k^2} + 
+ \log \frac{\sigma_j}{\sigma_k}.
 \end{equation}
 
-The class with the highest $p(\v{x})$ is then selected. In the case of two classes,
-this can be simplified by setting
-$p'(\v{x}) = \log \frac{p(\v{x},\theta_1)}{p(\v{x},\theta_2)}$.
-The value of $p'(\v{x})$ is then positive if $\v{x}$ is classified into class 1,
-and negative if into class 2. 
 
-\subsection{$k$ nearest neighbours}
+\subsubsection{Multivariate Gaussian discrimination}
+
+The multivariate gaussian discriminant operates analogically to the one-dimensional
+case, extending the discriminant function to eleven variables. It determines the class of a sample by
+comparing the probabilities of it belonging to each class, when each
+class is modelled using a multivariate Gaussian distribution. This can be problematic,
+since many real-world variables have a clearly non-Gaussian distribution.
+
+The Gaussian distributions are determined based on training data.
+The mean vector $\v{\mu}_k$ and covariance matrix $\mathbf{\Sigma}_k$ are calculated for each class.
+The probability of a sample $x$ belonging to the class can then be calculated
+using the multivariate Gaussian probability density function:
+
+\begin{equation}\label{monigauss}
+ p(\v{x}|\v{\mu}_k,\mathbf{\Sigma_k}) = \frac{1}{\sqrt{2\pi} |\mathbf{\Sigma_k}|}
+ e^{-\frac{1}{2}(\v{x}-\v{\mu}_k)^T \mathbf{\Sigma}_k^{-1} (\v{x}-\v{\mu}_k)}
+\end{equation}
+
+The likelihood of Eq. \eqref{monigauss} can be used directly for estimating the class of a
+sample $\v{x}$, or a Bayesian posterior can be utilized as in Eq. \eqref{posterior}. 
+A discriminant can be constructed parallelly to Eqs. \eqref{naiividiskr} and \eqref{naiividiskr2}:
+\begin{equation}
+	\begin{aligned}
+	 g_k(\v{x}) = \frac{1}{2}(\v{x}-\v{\mu}_j)^T \mathbf{\Sigma}_j^{-1} (\v{x}-\v{\mu}_j) - \\
+	 \frac{1}{2}(\v{x}-\v{\mu}_k)^T \mathbf{\Sigma}_k^{-1} (\v{x}-\v{\mu}_k) 
+	+\log \frac{|\mathbf{\Sigma}_j|}{|\mathbf{\Sigma}_k|}.
+       \end{aligned}
+\end{equation}
+Again, the class with the largest discriminant $g_k(\v{x})$ indicates the prediction of klass, $k$.
+
+\subsubsection{$k$ nearest neighbours}
 
 The $k$ nearest neighbours classifier is a non-parametric classifier. Only a
-distance function between points and a set of pre-classified points is required.
-The classification given by $k$ nearest neighbours for a new point $x$ is then found by simply
+distance function between the points in the variable space is required.
+The classification given by $k$ nearest neighbours for a new point $\v{x}$ is then found by simply
 selecting the $k$ points closest to $x$ according to the distance function and
-picking the most common class among the $k$ points.
+picking the most common class among the $k$ points. The training set is fully
+stored in memory. The samples in it are used for the nearest neighbour study
+of the points in the validation or the test set.
 
-Selecting a good distance function is important. The distributions of the
-input variables vary greatly. When using the Euclidean distance function,
+Selecting a good distance function is important, especially when many variables
+are used for the prediction. The distributions of the
+input variables can vary greatly. When using the Euclidean distance function,
 this causes certain variables to have a greater effect on the distance between
 points when compared to others. To prevent this, we used the Mahalanobis
 distance function\cite[p.~88]{Alpaydin}:
@@ -174,43 +226,62 @@ distance function\cite[p.~88]{Alpaydin}:
 
 where $\Sigma$ is the covariance matrix for the 
 distribution $\v{x}$ and $\v{y}$ are taken from.
-This normalizes the distance for the shape of the distribution.
+This normalizes the distances in the different dimensions of
+the variable space and also takes into account unneccessary correlations.
+The Mahalanobis distance is an intuitive distance measure for an arbitrarily
+scaled space. It appears for instance in the exponent of the multivariate
+Gaussian distribution of Eq. \eqref{monigauss}.
 
-\subsection{Random forest}
-
-Klassifikaatio ja regressio.
-
-\subsection{Linear discriminant}
-
-\subsection{Quadratic discriminant}
-
-\subsection{Linear least squares}
-
-The linear (or ordinary) least squares is a regression method that attempts to
-find the input variable coefficients for a linear function that predicts the desired variables.
-Essentially, this means finding an approximate solution for $\v{x}$ in
-
-\begin{equation*}
- A\v{x} = \v{b}
-\end{equation*}
-
-where $A$ contains the predictor and $\v{b}$ the predicted variable observations
-in the training data. The learned $\v{x}$ can then be used to make predictions when encountering
-new observations.
-
-The linear least squares method finds the approximate solution by minimizing the error measure
-
+If the class probabilities $p_c(\v{x})$ for a point $\v{x}$ are required, these can
+be calculated using the nearest neighbours of it. If the frequency of a class $c$
+within the $k$ nearest neighbours is $k_c$, the probability is simply
 \begin{equation}
- S(\v{x}) = \sum_{i=1}^n (\v{b} - A_i \v{x})^2
+ p(\v{x}) = \frac{k_c}{k}.
 \end{equation}
 
-where $n$ is the number of training observations. This measure is minimized by
+\subsubsection{Support vector machine}
 
+
+\subsubsection{Linear discriminant}
+
+\subsubsection{Quadratic discriminant}
+
+
+\subsubsection{Random forest}
+
+Klassifikaatio
+
+\subsection{Regression}
+
+\subsubsection{Random forest, regression}
+
+Lyhyt recap, mitä eroa klassifikaatioon
+
+\subsubsection{Linear least squares}
+
+The linear (or ordinary) least squares method is a regression algorithm that
+finds a linear fit for one variable as a function of multiple variables: $\hat{y} = \v{a}^T \v{x}+b$. 
+The vector $\v{a}$ and the constant $b$ are such that in the training set $\sum (y - \hat{y})$ is 
+minimized, hence the name least squares.
+
+The problem can be conveniently presented in a matrix form. Let $\mathbf{X}$ be a matrix
+with rows $[1, \v{x}^T]$, composed of all the samples in the training set. That is, the 
+constant $b$ is now included in the vector for the sake of convenience. Let $\v{y}$ be
+a corresponding column vector and $\v{w}$ a column vector that holds the linear coefficients and
 \begin{equation}
- \v{x} = (A^T A)^{-1} A^T b.
+\hat{\v{y}} = \mathbf{X} \v{w}
 \end{equation}
+is the least squares estimate. Now the least squares problem is equal to minimizing the
+vector product $(\v{y} - \hat{\v{y}})^T(\v{y} - \hat{\v{y}})$ with respect to $\v{w}$. 
 
-\todo{tähän vissiin vähän tarkemmin}
+It can be briefly shown that the optimal solution is given by 
+\begin{equation}
+ \v{w} = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T y.
+\end{equation}
+This is a usuful form, since it can be used for an arbitrary matrix $\mathbf{X}$. That is,
+$\mathbf{X}$ may hold only the given variables in a basic form, but also for instance higher
+exponents of the variables can be inserted into this matrix. Thus, it is relatively simple
+to control the complexity of this model.
 
 %\begin{figure}[H]
 %\centering
@@ -222,6 +293,10 @@ where $n$ is the number of training observations. This measure is minimized by
 %------------------------------------------------
 
 \section{Experiments}
+% 8/40 p
+% Method and materials (applied)
+% Necessary for applying the methods to the data: pre-proc., validation of params (cross-validation)
+% No results here!
 
 \subsection{Algorithm evaluation}
 
@@ -275,6 +350,17 @@ For wine quality, there are seven classes, so a more complex indicator was used.
 % \end{table}
 
 %------------------------------------------------
+
+\subsection{Method validation}
+
+Method validation is done using $k$-fold 
+cross validation with $k = 10$. That is, the training set is partitioned in 10 equally sized parts. 
+Validation is done ten times using each partition once as a validation set, while the other nine
+sections function as training sets. The mean error of the 10 validations functions as a measure
+of goodness of an algorithm. This is beneficial for choosing between different algorithms or
+between parameter values with a single algorithm.
+
+\subsection{Combining learners}
 
 \section{Results}
 
