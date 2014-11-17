@@ -269,16 +269,32 @@ for it is available.
 
 \subsubsection{Support vector machine}
 
+Support vector machines are a variant of linear discrimination. If classes do not overlap, it finds
+the separating hyperplanes between classes that have the largest margins. These hyperplanes correspond 
+to the linear discriminants. With overlapping classes, a penalty term is added to the solution in order
+to make the same approach work. The discriminants trained with the training set are used for validation
+and test sets.
 
 \subsubsection{Random forest}
 
-Klassifikaatio
+Random forest \cite{Forest} is an ensemble learning method that equips an ensemble of classification trees. Each tree 
+in the ensemble does classification using only a chosen number of the given variables. This could be for
+instance the square root of the total amount of variables. For this kind of an ensemble of trees
+the trees themselves are usually unpruned. The trees themselves are simply ordinary classification trees:
+they use the given variables and split the branches until a desired amount of purity or other conditions
+are fulfilled for the training set. It is utterly important that there is a sufficient amount of classification
+trees in the ensemble. With a too small amount of trees sufficient statistics are not reached and the algorithm
+does not perform optimally.
 
 \subsection{Regression}
 
 \subsubsection{Random forest, regression}
 
-Lyhyt recap, mitä eroa klassifikaatioon
+The random forest algorithm can be used also for regression. In this case, the classification trees in the 
+ensemble are substituted with regression trees. A regression tree gives effectively a constant value as an output,
+since a typical tree cannot easily give continuous output. When an ensemble of regression trees is considered, the 
+situation is a bit more interesting. The final output is averaged over many trees and thus the output resembles
+more a continuous behaviour.
 
 \subsubsection{Linear least squares}
 
@@ -306,6 +322,28 @@ $\mathbf{X}$ may hold only the given variables in a basic form, but also for ins
 exponents of the variables can be inserted into this matrix. Thus, it is relatively simple
 to control the complexity of this model.
 
+\subsection{PCA}
+
+Primary Component Analysis is a useful method that can be used with both classification and regression
+problems. Effectively, it reduces the amount of variables that the variable that is predicted depends
+on. This can be useful, if some of the provided data is not at all useful in the analysis. On the other
+hand, it gives an effective method of graphical representation of the data. If the studied variable
+depends on over three dimensions, using PCA it can be projected to three or two dimensions. This is
+helpful while trying to develop a concrete understanding of the data used.
+
+PCA itself relies on studying the parameters that are responsible for most of the variance of the studied
+variable. The greater the effect on variance, the more the parameter explains the behaviour of the variable.
+Mathematically, PCA studies the covariance matrix of the matrix that holds the training set samples of the 
+variables that are used to predict the variable of interest. The eigenvectors of the covariance matrix are
+the principal components. The corresponding eigenvalues indicate the relative fraction of variance that
+the principal components (eigenvectors) are responsible for. 
+
+If PCA is done with a reduction from $N$ to
+$K$ dimensions, the $K$ largest eigenvalues of the covariance matrix are chosen. The data in the training set is shifted so that
+its mean value is zero in all dimensions, and then it is projected on the $K$ eigenvectors that correspond
+to the chosen eigenvalues. This is the PCA-representation, which can be used for graphical purposes or
+also as the input data for machine learning algorithms.
+
 \subsection{Combining learners}
 
 If many different learners with approximately equal performance are found, it is instructive
@@ -320,7 +358,8 @@ The weights are normalized so that $w_1 + w_2 + w_3 = 1$. Thus the final probabi
 \end{equation}
 Because of the normalization condition and assumption that the weights are greater than zero,  $0 \leq w_1,w_2 \leq$ and $w_1 + w_2 \leq 1$. 
 An approximate solution can be found by scanning the possible values of $w_1$ and $w_2$ on a lattice with a spacing of $0.01$.
-The best values are chosen by validation.
+The best values are chosen by validation. In this work the goal is that no more than three learning algorithms are combined.
+With only two learning algorithms, only one parameter has to be scanned over.
 
 %\begin{figure}[H]
 %\centering
@@ -400,23 +439,52 @@ of goodness of an algorithm. This is beneficial for choosing between different a
 between parameter values with a single algorithm.
 
 \section{Results}
+% 4/80 p
+% Description of results with figures and tables
 
+Joku viileä alotustarina.
+
+\subsection{Prediction of type}
+
+Jotain introa ja PCA-kuva (2D tai 3D, hauskat värit punaiselle ja valkoiselle). PCA-kuvan piirtämiseen pitää tehdä erikseen skripti; tässä voi auttaa skripti jossa testataan PCA:ta.
+Voisi pistää myös virhelaskelmat naiiville arvaukselle \emph{kaikki ovat valkoviinejä} ja asettaa sen lähtötasoksi parempien algoritmien etsimiseen.
+
+\subsubsection{Gaussian models}
+
+Naiivi gauss ja monimuuttujallinen. Performanssin raportointia, kuva/taulukko? Cross-validationista voi pistää kaikki kymmenen virhettä ja keskiarvon.
+
+\subsubsection{Well-performing models}
+
+Lineaari-diskr, kNN, rand. forest, tulokset.
+
+\subsubsection{Final model}
+
+Painokerrointen valintaa ja tuloksen raportointia
+
+\subsection{Prediction of quality}
+
+Koodi hiottava vastaavasti kuin värissä.
 
 %------------------------------------------------
 
 \section{Discussion}
+% 4/80 p
 
+Pohdinnot, results:issa vain raportointi, ei pohdintaa.
 
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST
 %----------------------------------------------------------------------------------------
 
+% 2/80 p
 \bibliographystyle{plain}
 \bibliography{final_report}{}
 
 %------------------------------------------------
 
 \section*{Appendix A}
+% 4/80 p
+% koodi-otteita
 
 %----------------------------------------------------------------------------------------
 
