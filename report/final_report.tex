@@ -446,17 +446,31 @@ Joku viileä alotustarina.
 
 \subsection{Color prediction}
 
-Hieno kuva:
+The performance of the naive Gaussian discriminant, multivariate Gauss discriminant, linear discriminant, $k$ nearest neighbors and random forest
+algorithms, in addition to a final hybrid algorithm, were measured on the color prediction problem.
+
+The evaluation dataset can be visualized by projecting it into a two-dimensional plane using principal component analysis. Looking at 
+figure \ref{fig:pca_color_test} we can see that while the data is somewhat separated into two groups by PCA, there is no clear separation
+between the groups. For each evaluated algorithm, the rate of succesful predictions are reported. In addition, the erroneous predictions are shown on a PCA-projected
+image of the observations.
+
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.5\textwidth]{pca}
-\caption{Two most significant components of the PCA-projected observations}
-\label{fig:pca}
+\includegraphics[width=0.5\textwidth]{pca_color_test}
+\caption{2d PCA projection of test observations with colours}
+\label{fig:pca_color_test}
 \end{figure}
 
+Since the majority of the test observations are of white wines, a natural dummy model is to predict that all wines are white. This results in an error rate of 19.6\%, as seen
+in figure \ref{fig:RES_COLOR_dummy}.
 
-Jotain introa ja PCA-kuva (2D tai 3D, hauskat värit punaiselle ja valkoiselle). PCA-kuvan piirtämiseen pitää tehdä erikseen skripti; tässä voi auttaa skripti jossa testataan PCA:ta.
-Voisi pistää myös virhelaskelmat naiiville arvaukselle \emph{kaikki ovat valkoviinejä} ja asettaa sen lähtötasoksi parempien algoritmien etsimiseen.
+\begin{figure}[H]
+ \centering
+ \caption{Dummy model - All white}
+ \small{Error rate: 19.6\%}
+ \includegraphics[width=0.5\textwidth]{color_dummy}
+ \label{fig:RES_COLOR_dummy}
+\end{figure}
 
 \subsubsection{Gaussian models}
 
