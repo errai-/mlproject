@@ -7,7 +7,7 @@ function [ weights, fscores ] = evaluate_quality( pred_class, true_class )
         nfn = sum( true_class( (pred_class ~= i), : ) == i );
         ntn = sum( true_class( (pred_class ~= i), : ) ~= i );
         fscores(i) = f_score(ntp, ntn, nfp, nfn);
-        weights(i) = sum( true_class( (true_class == i), : ) );
+        weights(i) = sum( true_class == i );
     end
 end
 

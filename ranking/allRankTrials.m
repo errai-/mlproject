@@ -9,7 +9,7 @@ tra=4500; val=500; tes=1000;
 
 derrs = zeros(10,3); qderrs = zeros(10,3); serrs = zeros(10,3); 
 kerrs = zeros(10,3); lerrs = zeros(10,3); trerrs = zeros(10,3); 
-terrs = zeros(10,3);
+terrs = zeros(10,3); nerrs = zeros(10,3);
 
 for h=1:10
     %% Boundaries for cross-validation
@@ -23,31 +23,9 @@ for h=1:10
     traing = [table2array(training(:,1:11)), strcmp(training.type, 'Red'), training.quality];
     valid = [table2array(validation(:,1:11)), strcmp(validation.type, 'Red'), validation.quality];
 
-    %% Prior values, if needed
-    rPrior = sum(traing(:,12))/tra; wPrior = 1-rPrior;
-
-    %% Naive (only 1 variable) Gaussian discrimination
-    %m1 = mean(traing(traing(:,12)==1,8)); % Reds
-    %v1 = var(traing(traing(:,12)==1,8));
-    %m2 = mean(traing(traing(:,12)==0,8)); % Whites
-    %v2 = var(traing(traing(:,12)==0,8));
-
-    % With no prior and with prior
-    %nclass1 = (logDiscrNaive( valid(:,8),m1,m2,v1,v2,1,1)>0);
-    %nclass2 = (logDiscrNaive( valid(:,8),m1,m2,v1,v2,rPrior,wPrior)>0);
-
-    %% Gaussian discrimination
-    %m1 = mean(traing(traing(:,12)==1,1:11)); % Reds
-    %v1 = cov(traing(traing(:,12)==1,1:11));
-    %m2 = mean(traing(traing(:,12)==0,1:11)); % Whites
-    %v2 = cov(traing(traing(:,12)==0,1:11));
-
-    %gclass1=(1:val)'; gclass2=(1:val)'; % No prior and prior
-    %for i = 1:val
-    %    gclass1(i) = (logDiscrGauss(valid(i,1:11),m1,m2,v1,v2,1,1)>0);
-    %    gclass2(i) = (logDiscrGauss(valid(i,1:11),m1,m2,v1,v2,rPrior,wPrior)>0);
-    %end
-
+    %% Ultimately naive prediction
+    nclass = ones(val,1)*4;
+    
     %% Linear discriminant
     diskr = fitcdiscr(traing(:,1:11),traing(:,13),'DiscrimType','Linear');
     dclass=predict(diskr,valid(:,1:11));
@@ -78,6 +56,7 @@ for h=1:10
     lclass = round(valid(:, 1:11) * w);
     
     %% Standard errors
+    nerrs(h,1) = sum( nclass ~= valid(:,13) )/val;
     derrs(h,1) = sum( dclass ~= valid(:,13) )/val;
     qderrs(h,1) = sum( qdclass ~= valid(:,13) )/val;
     serrs(h,1) = sum( sclass ~= valid(:,13) )/val;
@@ -86,6 +65,7 @@ for h=1:10
     trerrs(h,1) = sum( trclass ~= valid(:,13) )/val;
     lerrs(h,1) = sum( lclass ~= valid(:,13) )/val
     
+    nerrs(h,2) = tot_fscore(nclass,valid(:,13));
     derrs(h,2) = tot_fscore(dclass,valid(:,13));
     qderrs(h,2) = tot_fscore(qdclass,valid(:,13));
     serrs(h,2) = tot_fscore(sclass,valid(:,13));
@@ -93,7 +73,22 @@ for h=1:10
     terrs(h,2) = tot_fscore(tclass,valid(:,13));
     trerrs(h,2) = tot_fscore(trclass,valid(:,13));
     lerrs(h,2) = tot_fscore(lclass,valid(:,13));
+    
+    nerrs(h,3) = meansqerr(nclass,valid(:,13));
+    derrs(h,3) = meansqerr(dclass,valid(:,13));
+    qderrs(h,3) = meansqerr(qdclass,valid(:,13));
+    serrs(h,3) = meansqerr(sclass,valid(:,13));
+    kerrs(h,3) = meansqerr(kclass,valid(:,13));
+    terrs(h,3) = meansqerr(tclass,valid(:,13));
+    trerrs(h,3) = meansqerr(trclass,valid(:,13));
+    lerrs(h,3) = meansqerr(lclass,valid(:,13));
 end
-[mean(derrs),mean(qderrs),mean(serrs),mean(kerrs)]
-[mean(terrs),mean(trerrs),mean(lerrs)]
+% Order:
+% discr, quadr. discr, svm, knn, tree, regr. tree, least squares
 
+% Absolute fraction of errors
+[mean(nerrs(:,1)),mean(derrs(:,1)),mean(qderrs(:,1)),mean(serrs(:,1)),mean(kerrs(:,1)),mean(terrs(:,1)),mean(trerrs(:,1)),mean(lerrs(:,1))]
+% Fscores
+[mean(nerrs(:,2)),mean(derrs(:,2)),mean(qderrs(:,2)),mean(serrs(:,2)),mean(kerrs(:,2)),mean(terrs(:,2)),mean(trerrs(:,2)),mean(lerrs(:,2))]
+% Square mean error
+[mean(nerrs(:,3)),mean(derrs(:,3)),mean(qderrs(:,3)),mean(serrs(:,3)),mean(kerrs(:,3)),mean(terrs(:,3)),mean(trerrs(:,3)),mean(lerrs(:,3))]
