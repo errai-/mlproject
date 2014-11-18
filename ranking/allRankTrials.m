@@ -7,8 +7,9 @@ tra=4500; val=500; tes=1000;
 
 %% 10-fold cross-validation %%
 
-nerrs = 1:10; npriorerrs = 1:10; gerrs = 1:10; gpriorerrs = 1:10;
-derrs = 1:10; kerrs = 1:10; terrs = 1:10;
+derrs = zeros(10,3); qderrs = zeros(10,3); serrs = zeros(10,3); 
+kerrs = zeros(10,3); lerrs = zeros(10,3); trerrs = zeros(10,3); 
+terrs = zeros(10,3);
 
 for h=1:10
     %% Boundaries for cross-validation
@@ -66,30 +67,33 @@ for h=1:10
     %% Random forest
     BaggedTreeEns = TreeBagger(1000,traing(:,1:11),traing(:,13)','NVarToSample',2);
     [tclass,treeProbs]=predict(BaggedTreeEns,valid(:,1:11));
+    tclass = round(treeProbs(:,2));
 
     %% Random forest, regression
     BaggedTreeEns = TreeBagger(1000,traing(:,1:11),traing(:,13)','NVarToSample',2,'Method','regression');
-    [trclass,rtreeProbs]=predict(BaggedTreeEns,valid(:,1:11));    
+    trclass=round(predict(BaggedTreeEns,valid(:,1:11)));    
+    
+    %% Least squares, regression
+    w = lscov(traing(:, 1:11), traing(:, 13));
+    lclass = round(valid(:, 1:11) * w);
     
     %% Standard errors
-    nerrs(h) = sum( nclass1 ~= valid(:,12) )/val;
-    npriorerrs(h) = sum( nclass2 ~= valid(:,12) )/val;
-    gerrs(h) = sum( gclass1 ~= valid(:,12) )/val;
-    gpriorerrs(h) = sum( gclass2 ~= valid(:,12) )/val;
-    derrs(h) = sum( dclass ~= valid(:,12) )/val;
-    kerrs(h) = sum( kclass ~= valid(:,12) )/val;
-    terrs(h) = sum( round(treeProbs(:,2)) ~= valid(:,12) )/val;
+    derrs(h,1) = sum( dclass ~= valid(:,13) )/val;
+    qderrs(h,1) = sum( qdclass ~= valid(:,13) )/val;
+    serrs(h,1) = sum( sclass ~= valid(:,13) )/val;
+    kerrs(h,1) = sum( kclass ~= valid(:,13) )/val;
+    terrs(h,1) = sum( tclass ~= valid(:,13) )/val;
+    trerrs(h,1) = sum( trclass ~= valid(:,13) )/val;
+    lerrs(h,1) = sum( lclass ~= valid(:,13) )/val
+    
+    derrs(h,2) = tot_fscore(dclass,valid(:,13));
+    qderrs(h,2) = tot_fscore(qdclass,valid(:,13));
+    serrs(h,2) = tot_fscore(sclass,valid(:,13));
+    kerrs(h,2) = tot_fscore(kclass,valid(:,13));
+    terrs(h,2) = tot_fscore(tclass,valid(:,13));
+    trerrs(h,2) = tot_fscore(trclass,valid(:,13));
+    lerrs(h,2) = tot_fscore(lclass,valid(:,13));
 end
-
-traing = [table2array(winefacts(:,1:11)),strcmp(winefacts.type,'Red'), winefacts.quality]';
-testng = [table2array(winechall(:,1:11)),strcmp(winechall.type,'Red')]';
-trainTarg = zeros(7,tra);
-
-BaggedTreeEns = TreeBagger(1000,traing(1:lim,:)',traing(13,:)','NVarToSample',2);
-[fresults,fprobs]=predict(BaggedTreeEns,traing(1:lim,:)');
-fresults=cell2mat(fresults); fresults=fresults-48;
-[gresults,gprobs]=predict(BaggedTreeEns,testng(1:lim,:)');
-gresults=cell2mat(gresults); gresults=gresults-48;
-
-fterrs = sum( fresults~=traing(13,:)' )/tra;
+[mean(derrs),mean(qderrs),mean(serrs),mean(kerrs)]
+[mean(terrs),mean(trerrs),mean(lerrs)]
 
