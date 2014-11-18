@@ -8,13 +8,11 @@ training = winefacts(:,:);
 traing = [table2array(training(:,1:11)), strcmp(training.type, 'Red')];
 
 %% PCA
-centered = detrend(traing(:, 1:11), 'constant');
+centered = traing(:, 1:11) ./ repmat(sqrt(var(traing(:, 1:11))), 1000, 1);
 
 [vecs,coeffs, NONE, NONE, explained] = pca(centered,'NumComponents',2);
 
 pcapts = [coeffs, traing(:, 12), preds];
-
-pcapts
 
 redOK = pcapts(( pcapts(:, 3) == 1 & pcapts(:, 4) == 1 ),:);
 redNO = pcapts(( pcapts(:, 3) == 1 & pcapts(:, 4) == 0 ),:);
@@ -32,6 +30,8 @@ plot(whiNO(:,1),whiNO(:,2),'b^', 'DisplayName', 'White, Incorrect');
 legend('-DynamicLegend');
 
 print('-depsc','-r300',name);
+
+fprintf(' -- %s -- \n', name);
 
 fprintf('      OK   NO\n');
 fprintf('Red %4d %4d\n', size(redOK, 1), size(redNO, 1));

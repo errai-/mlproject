@@ -22,7 +22,7 @@ for h=1:10
 
     traing = [table2array(training(:,1:11)), strcmp(training.type, 'Red')];
     valid = [table2array(validation(:,1:11)), strcmp(validation.type, 'Red')];
-    
+
     %% Prior values, if needed
     rPrior = sum(traing(:,12))/tra; wPrior = 1-rPrior;
 
@@ -35,7 +35,7 @@ for h=1:10
     % With no prior and with prior
     nclass1 = (logDiscrNaive( valid(:,8),m1,m2,v1,v2,1,1)>0);
     nclass2 = (logDiscrNaive( valid(:,8),m1,m2,v1,v2,rPrior,wPrior)>0);
-    
+
     %% Gaussian discrimination
     m1 = mean(traing(traing(:,12)==1,1:11)); % Reds
     v1 = cov(traing(traing(:,12)==1,1:11));
@@ -47,19 +47,19 @@ for h=1:10
         gclass1(i) = (logDiscrGauss(valid(i,1:11),m1,m2,v1,v2,1,1)>0);
         gclass2(i) = (logDiscrGauss(valid(i,1:11),m1,m2,v1,v2,rPrior,wPrior)>0);
     end
-    
+
     %% Linear discriminant
     diskr = fitcdiscr(traing(:,1:11),traing(:,12),'DiscrimType','Linear');
     dclass=predict(diskr,valid(:,1:11));
-    
+
     %% kNN, k=1 or k=3
     kNN = fitcknn(traing(:,1:11),traing(:,12),'Distance','mahalanobis','NumNeighbors',3);
     kclass=predict(kNN,valid(:,1:11));
-    
+
     %% Random forest 30
     BaggedTreeEns = TreeBagger(200,traing(:,1:11),traing(:,12),'NVarToSample',2);
     [tclass,treeProbs]=predict(BaggedTreeEns,valid(:,1:11));
-       
+
     %% Standard errors
     nerrs(h) = sum( nclass1 ~= valid(:,12) )/val;
     npriorerrs(h) = sum( nclass2 ~= valid(:,12) )/val;
@@ -72,9 +72,9 @@ end
 
 %% Output errors
 % logarithmic discrimination with and without prior
-[mean(nerrs),mean(npriorerrs),mean(gerrs),mean(gpriorerrs)]
+%[mean(nerrs),mean(npriorerrs),mean(gerrs),mean(gpriorerrs)]
 % equal, mean from loop, and afterwards, minimal possible error for each h
-[mean(derrs),mean(kerrs),mean(terrs),mean(serrs)] % Single errors
+%[mean(derrs),mean(kerrs),mean(terrs),mean(serrs)] % Single errors
 
 
 %% Testing: %%
@@ -88,7 +88,7 @@ testing = [table2array(winetests(:,1:11)), strcmp(winetests.type, 'Red')];
 m1 = mean(training(training(:,12)==1,8)); % Reds
 v1 = var(training(training(:,12)==1,8));
 m2 = mean(training(training(:,12)==0,8)); % Whites
-v2 = var(training(training(:,12)==0,8));   
+v2 = var(training(training(:,12)==0,8));
 % Gaussian discrimination
 gm1 = mean(training(training(:,12)==1,1:11)); % Reds
 gv1 = cov(training(training(:,12)==1,1:11));
@@ -97,7 +97,7 @@ gv2 = cov(training(training(:,12)==0,1:11));
 % Linear discriminant
 diskr = fitcdiscr(training(:,1:11),training(:,12),'DiscrimType','Linear');
 % kNN, k=1 or k=3
-kNN = fitcknn(training(:,1:11),training(:,12),'Distance','mahalanobis','NumNeighbors',1); 
+kNN = fitcknn(training(:,1:11),training(:,12),'Distance','mahalanobis','NumNeighbors',1);
 % Random forest
 BaggedTreeEns = TreeBagger(200,training(:,1:11),training(:,12),'NVarToSample',2);
 
@@ -122,3 +122,11 @@ kclass=predict(kNN,testing(:,1:11));
 % errors:
 [sum(nclass1~=testing(:,12)),sum(nclass2~=testing(:,12)),sum(gclass1~=testing(:,12)),sum(gclass2~=testing(:,12))]/tes
 [sum(dclass~=testing(:,12)),sum(kclass~=testing(:,12)),sum(round(treeProbs(:,2))~=testing(:,12))]/tes
+
+errplot(nclass1, 'naive_noprior');
+errplot(nclass2, 'naive_prior');
+errplot(gclass1, 'gauss_noprior');
+errplot(gclass2, 'gauss_prior');
+errplot(dclass, 'linear_discr');
+errplot(kclass, 'knn1');
+errplot(cellfun(@str2num,tclass), 'random_forest');
