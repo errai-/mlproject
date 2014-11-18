@@ -43,12 +43,12 @@ for h=1:10
     kclass=predict(kNN,valid(:,1:11));
 
     %% Random forest
-    BaggedTreeEns = TreeBagger(1000,traing(:,1:11),traing(:,13)','NVarToSample',2);
-    [tclass,treeProbs]=predict(BaggedTreeEns,valid(:,1:11));
-    tclass = round(treeProbs(:,2));
+    BaggedTreeEns = TreeBagger(1000,traing(:,1:11),traing(:,13),'NVarToSample',2);
+    tclass=predict(BaggedTreeEns,valid(:,1:11));
+    tclass=cell2mat(tclass); tclass=tclass-48;
 
     %% Random forest, regression
-    BaggedTreeEns = TreeBagger(1000,traing(:,1:11),traing(:,13)','NVarToSample',2,'Method','regression');
+    BaggedTreeEns = TreeBagger(1000,traing(:,1:11),traing(:,13),'NVarToSample',2,'Method','regression');
     trclass=round(predict(BaggedTreeEns,valid(:,1:11)));    
     
     %% Least squares, regression
@@ -92,3 +92,8 @@ end
 [mean(nerrs(:,2)),mean(derrs(:,2)),mean(qderrs(:,2)),mean(serrs(:,2)),mean(kerrs(:,2)),mean(terrs(:,2)),mean(trerrs(:,2)),mean(lerrs(:,2))]
 % Square mean error
 [mean(nerrs(:,3)),mean(derrs(:,3)),mean(qderrs(:,3)),mean(serrs(:,3)),mean(kerrs(:,3)),mean(terrs(:,3)),mean(trerrs(:,3)),mean(lerrs(:,3))]
+
+% Output values of one run:
+%     0.5606    0.4614    0.5180    0.4696    0.4596    0.3506    0.3962    0.4724
+%     0.2685    0.5111    0.4787    0.4576    0.5351    0.6293    0.5742    0.4907
+%     0.0398    0.0360    0.0391    0.0368    0.0392    0.0311    0.0320    0.0362

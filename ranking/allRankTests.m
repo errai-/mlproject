@@ -15,7 +15,7 @@ training = [table2array(winefacts(:,1:11)), strcmp(winefacts.type, 'Red'), winef
 testing = [table2array(winetests(:,1:11)), strcmp(winetests.type, 'Red'), winetests.quality];
 
 %% Ultimately naive prediction
-nclass = ones(val,1)*4;
+nclass = ones(tes,1)*4;
 
 %% Linear discriminant
 diskr = fitcdiscr(training(:,1:11),training(:,13),'DiscrimType','Linear');
@@ -34,12 +34,12 @@ kNN = fitcknn(training(:,1:11),training(:,13),'Distance','mahalanobis','NumNeigh
 kclass=predict(kNN,testing(:,1:11));
 
 %% Random forest
-BaggedTreeEns = TreeBagger(1000,training(:,1:11),training(:,13)','NVarToSample',2);
-[tclass,treeProbs]=predict(BaggedTreeEns,testing(:,1:11));
-tclass = round(treeProbs(:,2));
+BaggedTreeEns = TreeBagger(1000,training(:,1:11),training(:,13),'NVarToSample',2);
+tclass=predict(BaggedTreeEns,testing(:,1:11));
+tclass=cell2mat(tclass); tclass=tclass-48;
 
 %% Random forest, regression
-BaggedTreeEns = TreeBagger(1000,training(:,1:11),training(:,13)','NVarToSample',2,'Method','regression');
+BaggedTreeEns = TreeBagger(1000,training(:,1:11),training(:,13),'NVarToSample',2,'Method','regression');
 trclass=round(predict(BaggedTreeEns,testing(:,1:11)));    
 
 %% Least squares, regression
@@ -47,14 +47,14 @@ w = lscov(training(:, 1:11), training(:, 13));
 lclass = round(testing(:, 1:11) * w);
 
 %% Standard errors
-nerrs(1) = sum( nclass ~= testing(:,13) )/val;
-derrs(1) = sum( dclass ~= testing(:,13) )/val;
-qderrs(1) = sum( qdclass ~= testing(:,13) )/val;
-serrs(1) = sum( sclass ~= testing(:,13) )/val;
-kerrs(1) = sum( kclass ~= testing(:,13) )/val;
-terrs(1) = sum( tclass ~= testing(:,13) )/val;
-trerrs(1) = sum( trclass ~= testing(:,13) )/val;
-lerrs(1) = sum( lclass ~= testing(:,13) )/val
+nerrs(1) = sum( nclass ~= testing(:,13) )/tes;
+derrs(1) = sum( dclass ~= testing(:,13) )/tes;
+qderrs(1) = sum( qdclass ~= testing(:,13) )/tes;
+serrs(1) = sum( sclass ~= testing(:,13) )/tes;
+kerrs(1) = sum( kclass ~= testing(:,13) )/tes;
+terrs(1) = sum( tclass ~= testing(:,13) )/tes;
+trerrs(1) = sum( trclass ~= testing(:,13) )/tes;
+lerrs(1) = sum( lclass ~= testing(:,13) )/tes;
 
 nerrs(2) = tot_fscore(nclass,testing(:,13));
 derrs(2) = tot_fscore(dclass,testing(:,13));
