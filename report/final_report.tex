@@ -591,7 +591,8 @@ For each evaluated algorithm, the rate of successful predictions and the F-score
 of the observations. These are given in appendix \ref{appendix:colorpcakuvet}.
 
 The training and testing datasets can be visualized by projecting into a two-dimensional plane using principal component analysis. The two most important
-PCA components of the data are given in figures~\ref{fig:color_training_pca} and~\ref{fig:color_testing_pca}. Blue dots are used for marking the white wines and red dots for marking the red wines.
+PCA components of the data are given in figures~\ref{fig:color_training_pca} (training set) and~\ref{fig:color_testing_pca} (test set). 
+Blue dots are used for marking the white wines and red dots for marking the red wines.
 
 A sample of the code used for these tasks is given in appendix \ref{appendix:colorcode}. The code is from a cross-validation scheme for the different
 algorithms. This gives a good view on the structure of the used code - other cross-validations were done similarly. The difference to testing code is
@@ -738,7 +739,8 @@ For each evaluated algorithm, the classification error rate, the F-score, and th
 of the observations. These projections can be found in appendix \ref{appendix:qualitypcakuvet}.
 
 The training and testing datasets can be visualized by projecting into a two-dimensional plane using principal component analysis. The 
-two most important components of the data are presented in figures~\ref{fig:quality_training_pca} and~\ref{fig:quality_testing_pca}.
+two most important components of the data are presented in figures~\ref{fig:quality_training_pca} (training set) and~\ref{fig:quality_testing_pca}
+(test set).
 The black dots mark a score of 4, red as score that is larger than 4 and blue a score that is smaller than 4.
 
 Typical code used for this task is given in appendix \ref{appendix:qualitycode}. This shows the cross-validation of all algorithms and
@@ -855,8 +857,109 @@ Table~\ref{table:quality_testing} shows the mean error rates, f-scores, and \emp
 
 \section{Discussion}
 % 4/80 p
+%Pohdinnot, results:issa vain raportointi, ei pohdintaa. Lopetus.
 
-Pohdinnot, results:issa vain raportointi, ei pohdintaa. Lopetus.
+The analysis was strongly divided into two parts: the prediction of the color of a wine and the prediction of the 
+quality of a wine. Even if there were much differences, at least the basic knowledge gained in the color prediction
+was helpful with the more complex task to augur the quality.
+
+As can be seen from Fig. \ref{fig:color_training_pca}, the type of the wines is already quite well separated into two 
+classes, when the two primary components are studied. However, the division is not complete and some effort is needed
+to obtain an optimized prediction model. 
+
+The general cross-validation results are given in Table \ref{table:color_validation}. It can be seen that when the error
+rate is studied, the dummy model performed quite well. However, when the more complex estimator (f-score) is used,
+also the one-dimensional Gaussian estimator gives better results than the naive model. In contrast to these simple models,
+the multivariate Gaussian estimator performed surprisingly well in terms of both the error rate and the f-score.
+However, it should be noted that this is not nearly optimal model for the data in use. The non-Gaussian behaviour
+of the data can be easily observed and therefore there is a strong inductive bias present. Both in the case of the
+multivariate and the single variable Gaussian estimator, using a prior was useful. This is not surprising, because
+with weaker models using a prior is likely to have a positive effect.
+
+Three potentially good models were taken into the actual group of possible final models. For two of these some preliminary
+parameter choices had to be made. As can be seen in Fig. \ref{fig:knncrossval}, $k = 5$ seems to be the optimal choice
+for the kNN algorithm and thus it is used in the analysis. The case of the random forest algorithm is more complicated, see
+Figs. \ref{fig:RF400crossval} (400 trees) and \ref{fig:RF1000crossval} (1000 trees).
+A forest with 1000 trees is already relatively slow to use in a study and therefore no larger forests were used. At 400
+trees 3 variables in a tree seems to be favorable but at 1000 trees 2 variables in a tree is significantly better and 3 variables
+in a tree is unfavorable. Additionally, there seems to be some statistical noise in the results. Thus, with some risk it is
+decided to use two variables in a tree, with a forest of 400 trees. This is potentially a worse choice than using 3 parameters,
+but the difference should not be large. As a curiosity, it is informative to observe that the error rate and the difference between
+f-score and 1 are close to each other, when the f-score is close to 1.
+
+While experimenting with these methods, it was observed that all of the more involved models performed quite well. Thus it was
+decided to combine all three of them. There might be better ways to combine algorithms and at an error rate this low, it is
+hard to have a significant enhancement shown in the final results. A cross-validation was performed to choose coefficients for
+the probabilities of these three model (random forest, kNN and linear discrimination). The (cross-validated) error rate for the final hybrid model
+is lower than that of any single model as well as the f-score.
+
+A separate PCA-analysis was performed with linear discrimination. As it can be seen from Fig. \ref{fig:lindiscrpca}, there is no
+benefit to be gained by reducing the amount of dimensions. This is useful to acknowledge, since unnecessary variables would
+account for excess complexity. Here only the error rate is studied, but for a simple study it is sufficient.
+
+By viewing Fig. \ref{fig:color_testing_pca} that is a PCA-analysis for the test set, it can be seen that the color is quite similarly 
+distributed in the test set as in the training set. Additionally, from Table \ref{table:color_testing} it can be seen that the f-score and
+error rate are even better in the test set than the cross-validated numbers imply. Also, we can see that the cross-validated results and the
+test set results are in general close to each other. Thus, the whole procedure of evaluating different models seems to be successful,
+at least in the context of the given test data set. The final error is of the order of only a couple of misclassifications. From Appendix
+\ref{appendix:colorpcakuvet} it can be seen that at least one red wine is somewhat in the middle of white wines. This could be caused for instance 
+by a very untypical wine or a misclassification while recording the data. Thus, it is not reasonable to expect a much better success rate. Random
+errors can be always present for different reasons, even if the model was optimal.
+
+As it was originally hypothesized, determining the quality is a much more challenging task than the color prediction. This can be seen from Fig.
+\ref{fig:quality_training_pca}, where the black dots mark a ranking 4, blue dots a lower ranking and red dots a higher ranking. There is not a
+very clear separation present in this figure between different sections, in contrast to the quality of wines. This augurs a troublesome
+process of method optimization.
+
+Partially the same algorithms were used for the quality prediction as for classification, but some algorithms, including regression were added.
+Once again, it was necessary to find fitting parameters for the kNN algorithm and for the random forest algorithm. From Fig. \ref{fig:knnqcrossval}
+it can be seen that $k = 1$ would be the preferable parameter value in this case. This choice is not that good, if the algorithms are to be combined.
+With $k = 1$ the probability estimates are not useful. However, at this phase it is not known, if the algorithm is going to be combined with some other
+algorithm. Thus, it is sensible to choose initially $k = 1$ and make further considerations later. For the random forest algorithm, 
+a forest of 1000 trees was chosen directly, to deal with the complexity. A cross-validation over variable-amounts was done
+and the results can be viewed in Fig. \ref{fig:RFq1000crossval}. Here it is obvious, that two variables in a tree gives the optimal results.
+
+This time only the dummy model was hypothetically worse than the others. There was no way to predict differences between the other models. The 
+cross-validation errors are shown in Fig. \ref{table:quality_validation}. In terms of the error rate, the dummy model performed quite well, but its 
+f-score is very low. Many of the models were simply quite badly performing with the present problem. The linear least squares model was bad 
+in terms of f-score and error rate and also its mean square error is not exceptionally good. On the other hand, the random forest for regression
+had the second best performance. However, it was bested by the actual random forest algorithm in all the goodness measures. Thus, at least with
+the present level of analysis regression models were less favorable in all ways, and the problem can be safely done by classification.
+
+Only the linear discriminant of the methods involving dicrimination obtained an f-score greater than 0.5 and even this with a small marginal.
+Apparently the quadratic discrimination model was too complex and also the support vector machine was not of use in this case. It turns out 
+that only kNN with $k = 1$ can get somewhat close to the performance of the random forest algorithm for classification. Having this in mind,
+the kNN is incompatible for algorithm fusion, since $k = 1$ and the performance would be worse with for instance $k = 3$. Thus it seems that
+no benefit is gained by fusing algorithm. The random forest model for classification is in this case the final model. The results are not
+excellent, but at least the ranking could be predicted to some degree. It seems that a much more involved model would be reasonable.
+
+By viewing Fig. \ref{fig:quality_testing_pca} (PCA for the test set), it can be seen that once again the test set resembles the training set.
+From the table \ref{table:quality_testing} it can be seen that the cross-validation estimates were accurate in the context of the values
+obtained by testing. Thus, it was instructive to use only the random forest algorithm as the final model. There is an error rate of approximately
+$35 \%$ left in the data, but this is not disastrous with data that are this complex.
+
+Thus, in general the task of type prediction was completed almost completely, including a small error rate. Similar results could have been probably
+achieved with other algorithms, but there is no reason to expect that they would have performed in a much better way. Even this task did not seem 
+to be that simple, since eleven variables are fully needed for this analysis. On the contrary, the task of predicting the quality was
+complicated. Even powerful algorithms were stuck with high error rates. A suitable variety of algorithms were tried out and, therefore, it is 
+not reasonable to assume that some other basic algorithms would obtain easily better results. 
+
+The best performing algorithm was the random forest for classification. It is an ensemble method and therefore it is possible that by applying
+ensemble techniques to other algorithms, better result would be obtained. Still, it is not reasonable to assume that some algorithm would obtain
+as low error rates as in the case of type classification. This could be explained by many factors. For instance, it is possible that there was not 
+a sufficient amount of variables supplied. The human taste is complex and it is possible that the requirement for more data would explain the quality
+of the results. On the other hand, it is possible that the quality ranking is not completely deterministic. The rankings are probably given by different
+groups of wine criticists and it is likely that the view of ranking varies to some extent. It is also possible that due to the complexity of the human
+taste, more involved methods would be necessary to obtain a lower error rate.
+
+The study can be seen to be successful with the given tasks. A large variety of algorithms was tested and the situation was studied diversely.
+The wine type was predicted well and also the ranking received somewhat good augurs. The latter could have been even better, but in the context of this
+analysis the results were sufficient. As a next step, significantly different algorithms could be used. For instance, neural networks could be useful
+for an involved analysis. Additionally, some additional knowledge about wines and the human taste could be useful. By taking into account more facts,
+better results could be received. All in all, the task of predicting wine quality functions as a good benchmark for machine learning algorithms. Since
+that many common algorithms perform poorly, a good performance implies that a studied algorithm is good at least at some, complex problems.
+There remains much to study in the field of machine learning algorithms. Hence it is good to have commonly known hard problems available for testing
+new algorithms.
 
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST
