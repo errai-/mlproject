@@ -447,7 +447,7 @@ a raise in the amount of true positives. Thus, using f-score, more value is give
 
 Since the prediction of quality has some regressive nature, an additional score more fitting for regression was given
 for the forecasts of quality. The score is defined as a mean squared error:
-\begin{equation}
+\begin{equation}\label{distmetric}
  \epsilon = \frac{1}{N} \sqrt{ \sum_{i=1}^N ( \text{prediction}_i - \text{true}_i )^2 }.
 \end{equation}
 This score indicates how much the predicted quality differs from the actual quality. This score type is more of a curiosity,
@@ -590,9 +590,12 @@ is also included in the results.
 For each evaluated algorithm, the rate of successful predictions and the F-score are reported. In addition, the success of the predictions are shown on PCA projections
 of the observations. These are given in appendix \ref{appendix:colorpcakuvet}.
 
-The training and testing datasets can be visualized by projecting into a two-dimensional plane using principal component analysis. By taking a look at
-figures~\ref{fig:color_training_pca} and~\ref{fig:color_testing_pca} we can see that while the data is somewhat separated into groups by PCA,
-the separation is not complete. In the figures blue dots are used for marking the white wines and red dots for marking the red wines.
+The training and testing datasets can be visualized by projecting into a two-dimensional plane using principal component analysis. The two most important
+PCA components of the data are given in figures~\ref{fig:color_training_pca} and~\ref{fig:color_testing_pca}. Blue dots are used for marking the white wines and red dots for marking the red wines.
+
+A sample of the code used for these tasks is given in appendix \ref{appendix:colorcode}. The code is from a cross-validation scheme for the different
+algorithms. This gives a good view on the structure of the used code - other cross-validations were done similarly. The difference to testing code is
+that in testing there is no cross-validation loop.
 
 \begin{figure}[H]
 \centering
@@ -724,19 +727,22 @@ Hybrid & 0.20\% & 0.998 \\
 \end{tabular}
 \end{table}
 
-\subsection{Quality prediction}
+\subsection{Prediction of Quality}
 
-The performance of the linear discriminant, quadratic discriminant, support vector machine, $k=1$ nearest neighbors and random forest
-classification algorithms, as well as the random forest and linear least squares regression algorithms were tested using cross validation 
-on the training dataset and a testing dataset.
+Similarly to the procedures in the type prediction, the available algorithms were studied with both cross-validation and using the test set. 
+The performance of the linear discriminant, quadratic discriminant, support vector machine, k nearest neighbors and random forest
+classification algorithms, as well as the random forest and linear least squares regression algorithms were tested.
 Since the majority of the test observations are of quality 4, a natural dummy model is to assume that all wines have quality 4.
-This dummy model is also included in the results.
-For each evaluated algorithm, the classification error rate, the F-score, and mean real distance are reported. In addition, the predictions are shown on a PCA projection
-of the observations. These projections can be found in appendix A.
+It is also included in the results.
+For each evaluated algorithm, the classification error rate, the F-score, and the \emph{distance} defined by Eq. \eqref{distmetric}. In addition, the predictions are shown on a PCA projection
+of the observations. These projections can be found in appendix \ref{appendix:qualitypcakuvet}.
 
-The training and testing datasets can be visualized by projecting into a two-dimensional plane using principal component analysis. Looking at
-figures~\ref{fig:quality_training_pca} and~\ref{fig:quality_testing_pca} we can see that contrary to the color visualization, there are no clear groups
-formed by different wine qualities.
+The training and testing datasets can be visualized by projecting into a two-dimensional plane using principal component analysis. The 
+two most important components of the data are presented in figures~\ref{fig:quality_training_pca} and~\ref{fig:quality_testing_pca}.
+The black dots mark a score of 4, red as score that is larger than 4 and blue a score that is smaller than 4.
+
+Typical code used for this task is given in appendix \ref{appendix:qualitycode}. This shows the cross-validation of all algorithms and
+contains all the essential information of the analysis.
 
 \begin{figure}[H]
 \centering
@@ -752,16 +758,45 @@ formed by different wine qualities.
 \label{fig:quality_testing_pca}
 \end{figure}
 
+\subsubsection{kNN cross-validation}
+
+A cross-validation procedure was performed to find and optimal value for the parameter $k$ in the 
+kNN -algorithm. The procedure was similar to that of quality prediction. The largest difference is
+the quantity that is being predicted. The results are given in
+Fig. \ref{fig:knnqcrossval}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{knnqcrossval}
+\caption{Cross-validation for the parameter of kNN}
+\label{fig:knnqcrossval}
+\end{figure}
+
+\subsubsection{Random forest cross-validation}
+
+For the random forest, the size of forests and the amount of values in one tree has to be again.
+Because of the complexity of the problem, a large forest with 1000 trees is used. Cross-validation
+is done to test trees that include different amounts of variables. The results are given in Fig. 
+\ref{fig:RFqcrossval}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{RFqcrossval}
+\caption{Cross-validation for the parameter of the random forest, forest size 400}
+\label{fig:RFq1000crossval}
+\end{figure}
+
 \subsubsection{Validation}
 
-Table~\ref{table:quality_validation} shows the mean error rates, f-scores, and mean real distances for each evaluated algorithm when run against the validation data. The values are averaged across each
-cross-validation partition on the training data.
+The cross-validation results are most important while making decisions of the final models. Thus, the results of cross-validation are reported carefully for all algorithms.
+Table~\ref{table:quality_validation} shows the mean error rates, f-scores, and \emph{distances} for each evaluated algorithm when run against the validation data. The values are averaged over each
+cross-validation partition of the training data.
 
 \begin{table}[H]
 \caption{Quality prediction - validation}
 \label{table:quality_validation}
 \centering
-\begin{tabular}{lll}
+\begin{tabular}{llll}
 \multicolumn{3}{l}{\textbf{Method}} \\
 \textbf{Error rate} & \textbf{F-score} & \textbf{Distance} \\
 \midrule
@@ -786,13 +821,14 @@ cross-validation partition on the training data.
 
 \subsubsection{Testing}
 
-Table~\ref{table:quality_testing} shows the mean error rates, f-scores, and mean real distances for each evaluated algorithm when run against the testing data.
+All the algorithms were again run also at the testing phase. Thus, it is easy to view whether the cross validation has been a good measure of precision or not.
+Table~\ref{table:quality_testing} shows the mean error rates, f-scores, and \emph{distances} for each evaluated algorithm when run against the testing data.
 
 \begin{table}[H]
 \caption{Quality prediction - testing}
 \label{table:quality_testing}
 \centering
-\begin{tabular}{cccc}
+\begin{tabular}{llll}
 \multicolumn{3}{l}{\textbf{Method}} \\
 \textbf{Error rate} & \textbf{F-score} & \textbf{Distance} \\
 \midrule
@@ -962,7 +998,7 @@ end
 
 }
 
-\section{Code sample, quality prediction}
+\section{Code sample, quality prediction}\label{appendix:qualitycode}
 
 The following matlab code shows a cross-validation procedure
 that tests all the methods used. The code used with the test
