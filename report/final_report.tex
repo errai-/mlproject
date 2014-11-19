@@ -582,79 +582,110 @@ Joku viileä alotustarina.
 \subsection{Color prediction}
 
 The performance of the naive Gaussian discriminant, multivariate Gauss discriminant, linear discriminant, $k$ nearest neighbors and random forest
-algorithms, in addition to a final hybrid algorithm, were measured on the color prediction problem.
+algorithms, as well as the final hybrid algorithm were tested using cross validation on the training dataset and a testing dataset.
+Since the majority of the test observations are of white wines, a natural dummy model is to predict that all wines are white. This dummy model
+is also included in the results.
+For each evaluated algorithm, the rate of succesful predictions and the F-score are reported. In addition, the predictions are shown on a PCA projection
+of the observations. These projections can be found in appendix A.
 
-The evaluation dataset can be visualized by projecting it into a two-dimensional plane using principal component analysis. Looking at 
-figure \ref{fig:pca_color_test} we can see that while the data is somewhat separated into two groups by PCA, there is no clear separation
-between the groups. For each evaluated algorithm, the rate of succesful predictions are reported. In addition, the erroneous predictions are shown on a PCA-projected
-image of the observations.
+The training and testing datasets can be visualized by projecting into a two-dimensional plane using principal component analysis. Looking at
+figures~\ref{fig:color_training_pca} and~\ref{fig:color_testing_pca} we can see that while the data is somewhat separated into groups by PCA,
+there is no clear separation between the groups.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.5\textwidth]{pca_color_test}
-\caption{2d PCA projection of test observations with colours}
-\label{fig:pca_color_test}
+\includegraphics[width=0.5\textwidth]{trainingpca}
+\caption{PCA projection of training dataset}
+\label{fig:color_training_pca}
 \end{figure}
-
-Since the majority of the test observations are of white wines, a natural dummy model is to predict that all wines are white. This results in an error rate of 19.6\%, as seen
-in figure \ref{fig:RES_COLOR_dummy}.
 
 \begin{figure}[H]
- \centering
- \caption{Dummy model - All white}
- \small{Error rate: 19.6\%}
- \includegraphics[width=0.5\textwidth]{color_dummy}
- \label{fig:RES_COLOR_dummy}
+\centering
+\includegraphics[width=0.5\textwidth]{testpca}
+\caption{PCA projection of testing dataset}
+\label{fig:color_testing_pca}
 \end{figure}
 
-\subsubsection{Gaussian models}
+\subsubsection{Validation}
 
-%  -- naive_noprior -- 
-%       OK   NO
-% Red  159   37
-% Whi  541  263
-% Error rate: 30.00%
-%  -- naive_prior -- 
-%       OK   NO
-% Red   99   97
-% Whi  645  159
-% Error rate: 25.60%
-%  -- gauss_noprior -- 
-%       OK   NO
-% Red  194    2
-% Whi  783   21
-% Error rate: 2.30%
-%  -- gauss_prior -- 
-%       OK   NO
-% Red  194    2
-% Whi  787   17
-% Error rate: 1.90%
-%  -- linear_discr -- 
-%       OK   NO
-% Red  195    1
-% Whi  802    2
-% Error rate: 0.30%
-%  -- knn1 -- 
-%       OK   NO
-% Red  195    1
-% Whi  798    6
-% Error rate: 0.70%
-%  -- random_forest -- 
-%       OK   NO
-% Red  194    2
-% Whi  803    1
-% Error rate: 0.30%
+Table~\ref{table:color_validation} shows the mean error rates and F scores for each evaluated algorithm. The values are averaged across each
+cross-validation partition on the training data.
 
+\begin{table}[H]
+\caption{Color prediction - validation set}
+\label{table:color_validation}
+\begin{tabular}{ccc}
+\textbf{Method} & \textbf{Error rate} & \textbf{F-score}\\
+\midrule
+\multicolumn{3}{c}{\textbf{Naive Gaussian}} \\
+Uniform prior & 27.44\% & 0.756 \\
+Proportional prior & 22.90\% & 0.782 \\
+\\
+\multicolumn{3}{c}{\textbf{Multivariate Gaussian}} \\
+Uniform prior & 2.22\% & 0.978 \\
+Proportional prior & 1.94\% & 0.981 \\
+\\
+\multicolumn{3}{c}{\textbf{Other methods}} \\
+Linear discrimination & 0.66\% & 0.993 \\
+$3$ nearest neighbours & 0.75\% & 0.993 \\
+Random forest & 0.50\% & 0.995 \\
+Hybrid & 0.38\% & 0.996 \\
+\\
+Dummy & 18.12\% & 0.737 \\
+\end{tabular}
+\end{table}
 
-Naiivi gauss ja monimuuttujallinen. Performanssin raportointia, kuva/taulukko? Cross-validationista voi pistää kaikki kymmenen virhettä ja keskiarvon.
+\subsubsection{Testing}
 
-\subsubsection{Well-performing models}
+ -- naive_noprior -- 
+      OK   NO
+Red  159   37
+Whi  541  263
+Error rate: 30.00%
+F-score:    0.730325
+ -- naive_prior -- 
+      OK   NO
+Red   99   97
+Whi  645  159
+Error rate: 25.60%
+F-score:    0.756347
+ -- gauss_noprior -- 
+      OK   NO
+Red  194    2
+Whi  783   21
+Error rate: 2.30%
+F-score:    0.977394
+ -- gauss_prior -- 
+      OK   NO
+Red  194    2
+Whi  787   17
+Error rate: 1.90%
+F-score:    0.981261
+ -- linear_discr -- 
+      OK   NO
+Red  195    1
+Whi  802    2
+Error rate: 0.30%
+F-score:    0.997003
+ -- knn3 -- 
+      OK   NO
+Red  195    1
+Whi  800    4
+Error rate: 0.50%
+F-score:    0.995014
+ -- random_forest -- 
+      OK   NO
+Red  194    2
+Whi  803    1
+Error rate: 0.30%
+F-score:    0.996997
+ -- dummy -- 
+      OK   NO
+Red    0  196
+Whi  804    0
+Error rate: 19.60%
+F-score:    0.716647
 
-Lineaari-diskr, kNN, rand. forest, tulokset.
-
-\subsubsection{Final model}
-
-Painokerrointen valintaa ja tuloksen raportointia
 
 \subsection{Prediction of quality}
 
