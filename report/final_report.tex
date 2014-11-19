@@ -585,7 +585,7 @@ The performance of the naive Gaussian discriminant, multivariate Gauss discrimin
 algorithms, as well as the final hybrid algorithm were tested using cross validation on the training dataset and a testing dataset.
 Since the majority of the test observations are of white wines, a natural dummy model is to predict that all wines are white. This dummy model
 is also included in the results.
-For each evaluated algorithm, the rate of succesful predictions and the F-score are reported. In addition, the predictions are shown on a PCA projection
+For each evaluated algorithm, the error rate and the F-score are reported. In addition, the predictions are shown on a PCA projection
 of the observations. These projections can be found in appendix A.
 
 The training and testing datasets can be visualized by projecting into a two-dimensional plane using principal component analysis. Looking at
@@ -663,9 +663,65 @@ Dummy & 19.60\% & 0.717 \\
 \end{tabular}
 \end{table}
 
-\subsection{Prediction of quality}
+\subsection{Quality prediction}
 
-Koodi hiottava vastaavasti kuin värissä.
+The performance of the linear discriminant, quadratic discriminant, support vector machine, $k=1$ nearest neighbors and random forest
+classification algorithms, as well as the random forest and linear least squares regression algorithms were tested using cross validation 
+on the training dataset and a testing dataset.
+Since the majority of the test observations are of quality 4, a natural dummy model is to assume that all wines have quality 4.
+This dummy model is also included in the results.
+For each evaluated algorithm, the classification error rate, the F-score, and mean real distance are reported. In addition, the predictions are shown on a PCA projection
+of the observations. These projections can be found in appendix A.
+
+The training and testing datasets can be visualized by projecting into a two-dimensional plane using principal component analysis. Looking at
+figures~\ref{fig:color_training_pca} and~\ref{fig:color_testing_pca} contrary to the color visualization, there are no clear groups
+formed by different wine qualities.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{qpcatraining}
+\caption{PCA projection of training dataset. Blue is bad, red is good quality.}
+\label{fig:quality_training_pca}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{qpcatesting}
+\caption{PCA projection of testing dataset. Blue is bad, red is good quality.}
+\label{fig:quality_testing_pca}
+\end{figure}
+
+\subsubsection{Validation}
+
+Table~\ref{table:quality_validation} shows the mean error rates, f-scores, and mean real distances for each evaluated algorithm when run against the validation data. The values are averaged across each
+cross-validation partition on the training data.
+
+\begin{table}[H]
+\caption{Color prediction - validation}
+\label{table:quality_validation}
+\centering
+\begin{tabular}{cccc}
+\multicolumn{3}{l}{\textbf{Method}} \\
+\textbf{Error rate} & \textbf{F-score} & \textbf{Distance} \\
+\midrule
+\multicolumn{3}{l}{Dummy} \\
+56.06\% & 0.2685 & 0.0398 \\
+\multicolumn{3}{l}{Linear discriminant} \\
+46.14\% & 0.5111 & 0.0360 \\
+\multicolumn{3}{l}{Quadratic discriminant} \\
+51.80\% & 0.4787 & 0.0391 \\
+\multicolumn{3}{l}{Support vector machine} \\
+46.96\% & 0.4576 & 0.0368 \\
+\multicolumn{3}{l}{$1$ nearest neighbor} \\
+41.74\% & 0.5810 & 0.0377 \\
+\multicolumn{3}{l}{Random forest} \\
+35.06\% & 0.6293 & 0.0311 \\
+\multicolumn{3}{l}{Random forest (regression)} \\
+39.62\% & 0.5742 & 0.0320 \\
+\multicolumn{3}{l}{Linear least squares} \\
+47.24\% & 0.4907 & 0.0362 \\
+\end{tabular}
+\end{table}
 
 %------------------------------------------------
 
