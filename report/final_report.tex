@@ -505,7 +505,7 @@ with this algorithm matters related to computational time become important.
 \subsubsection{PCA}
 
 Primary component analysis can be useful in pre-processing data, at least if some \emph{unnecessary} data is given. Thus, it is good to check, whether
-using it is beneficial with the current data. It can also depend on algortihm, whether or not PCA gives enhanced results. The $k$NN-algorithm and random
+using it is beneficial with the current data. It can also depend on algortihm, whether or not PCA gives enhanced results. The kNN-algorithm and random
 forest in general are friendly with a high dimensionality. Thus, a reduction in dimensionality may not be very helpful. On the contrary, the linear discriminant
 method may obtain significant advantage of having to use less dimensions. Thus, this method is tested with different amounts of projection dimensions.
 
@@ -608,14 +608,62 @@ the separation is not complete. In the figures blue dots are used for marking th
 \label{fig:color_testing_pca}
 \end{figure}
 
-\subsubsection{$k$NN cross-validation}
+\subsubsection{kNN cross-validation}
+
+A cross-validation procedure was performed to find and optimal value for the parameter $k$ in the 
+kNN -algorithm. Both the error rate and f-score was computed for each $k$. In general the value
+of $k$ is odd, so that there will not be votes that result into ties. The results are given in
+Fig. \ref{fig:knncrossval}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{knncrossval}
+\caption{Cross-validation for the parameter of kNN}
+\label{fig:knncrossval}
+\end{figure}
 
 \subsubsection{Random forest cross-validation}
+
+For random forests, the size of forests and the amount of values in one tree has to be determined.
+With a too large forest, computation becomes very slow. Forests of two different sizes were used
+for cross-validation over the amount of variables in one tree. The results with a forest of 400
+trees are given in Fig. \ref{fig:RF400crossval} and the results of with a forest of 1000 trees
+are given in Fig. \ref{fig:RF1000crossval}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{randforcrossval400}
+\caption{Cross-validation for the parameter of the random forest, forest size 400}
+\label{fig:RF400crossval}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{randforcrossval1000}
+\caption{Cross-validation for the parameter of the random forest, forest size 1000}
+\label{fig:RF1000crossval}
+\end{figure}
+
+\subsubsection{PCA with linear discrimination}
+
+The effects of a PCA algorithm was tested on the given data with cross-validation. 
+For this analysis, linear discrimination was used. It was tested with all different
+amounts of PCA-components, to check, whether some of the given data is redundant.
+The results are presented in Fig. \ref{fig:lindiscrpca}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{lindiskrpca}
+\caption{Cross-validation for the amount of used PCA components}
+\label{fig:lindiscrpca}
+\end{figure}
 
 \subsubsection{Cross-validation between algorithms}
 
 To determine, which algorithms should be used for the final evaluation a 10-fold cross-validation was performed. As a result, error values and f-scores were obtained.
-These are useful for estimating the actual performance of the algorithms in a test set. 
+These are useful for estimating the actual performance of the algorithms in a test set. The parameter of 
+kNN is set to $k = 5$ and for the random forest 400 trees are used with two variables in each tree. These
+selections are based on cross-validation and are motivated in the discussion-section.
 
 Table~\ref{table:color_validation} shows the mean error rates and f-scores for each evaluated algorithm obtained in validation. The values are averaged over each
 cross-validation partition on the training data.
@@ -654,7 +702,7 @@ Table~\ref{table:color_testing} shows the error rates and f-scores for each algo
 \begin{table}[H]
 \caption{Color prediction - testing}
 \label{table:color_testing}
-\begin{tabular}{ccc}
+\begin{tabular}{lll}
 \textbf{Method} & \textbf{Error rate} & \textbf{F-score}\\
 \midrule
 Dummy & 19.60\% & 0.717 \\
@@ -713,7 +761,7 @@ cross-validation partition on the training data.
 \caption{Quality prediction - validation}
 \label{table:quality_validation}
 \centering
-\begin{tabular}{cccc}
+\begin{tabular}{lll}
 \multicolumn{3}{l}{\textbf{Method}} \\
 \textbf{Error rate} & \textbf{F-score} & \textbf{Distance} \\
 \midrule
@@ -772,7 +820,7 @@ Table~\ref{table:quality_testing} shows the mean error rates, f-scores, and mean
 \section{Discussion}
 % 4/80 p
 
-Pohdinnot, results:issa vain raportointi, ei pohdintaa.
+Pohdinnot, results:issa vain raportointi, ei pohdintaa. Lopetus.
 
 %----------------------------------------------------------------------------------------
 %	REFERENCE LIST
@@ -784,13 +832,244 @@ Pohdinnot, results:issa vain raportointi, ei pohdintaa.
 
 %------------------------------------------------
 \appendix
-
-\section{PCA type prediction}\label{appendix:colorpcakuvet}
 % 4/80 p
 % koodi-otteita
+
+\section{PCA figures, type prediction}\label{appendix:colorpcakuvet}
 PCA projections that show, which predictions have failed for each algorithm.
 
 %----------------------------------------------------------------------------------------
+\section{PCA figures, quality prediction}\label{appendix:qualitypcakuvet}
+PCA projections that show, which predictions have failed for each algorithm.
+
+
+\section{Code sample, color prediction}\label{appendix:colorcode}
+
+The following matlab code shows a cross-validation procedure
+that tests all the methods used. The code used with the test
+set is similar, but it lacks the for-loop that is meant for 
+cross-validation.
+
+{\footnotesize
+
+\begin{verbatim}
+winefacts = readtable('../training_dataset.csv');
+winetests = readtable('../test_dataset.csv');
+
+tra=4500; val=500; tes=1000;
+
+%% 10-fold cross-validation %%
+
+nerrs = 1:10; npriorerrs = 1:10; gerrs = 1:10; 
+gpriorerrs = 1:10;
+derrs = 1:10; kerrs = 1:10; terrs = 1:10;
+
+err_rates = repmat([0], 10, 8); 
+f_scores = repmat([0], 10, 8); 
+
+for h=1:10
+    %% Boundaries for cross-validation
+    lower = 1+500*(h-1); upper = 500*h;
+    indices = [ 1:(lower-1), (upper+1):5000, lower:upper ];
+
+    %% Set convenient training and validation sets
+    training = winefacts(indices(1:tra),:);
+    validation = winefacts(indices(tra+1:tra+val),:);
+
+    traing = [table2array(training(:,1:11)), ... 
+      strcmp(training.type, 'Red')];
+    valid = [table2array(validation(:,1:11)), ... 
+      strcmp(validation.type, 'Red')];
+
+    %% Prior values, if needed
+    rPrior = sum(traing(:,12))/tra; wPrior = 1-rPrior;
+
+    %% Naive (only 1 variable) Gaussian discrimination
+    m1 = mean(traing(traing(:,12)==1,8)); % Reds
+    v1 = var(traing(traing(:,12)==1,8));
+    m2 = mean(traing(traing(:,12)==0,8)); % Whites
+    v2 = var(traing(traing(:,12)==0,8));
+
+    % With no prior and with prior
+    nclass1 = (logDiscrNaive( valid(:,8),m1,m2,v1,v2,1,1)>0);
+    nclass2 = (logDiscrNaive( valid(:,8),m1,m2,v1,v2, ... 
+      rPrior,wPrior)>0);
+
+    %% Gaussian discrimination
+    m1 = mean(traing(traing(:,12)==1,1:11)); % Reds
+    v1 = cov(traing(traing(:,12)==1,1:11));
+    m2 = mean(traing(traing(:,12)==0,1:11)); % Whites
+    v2 = cov(traing(traing(:,12)==0,1:11));
+
+    gclass1=(1:val)'; gclass2=(1:val)'; % No prior and prior
+    for i = 1:val
+        gclass1(i) = (logDiscrGauss(valid(i,1:11),m1,m2, ... 
+	  v1,v2,1,1)>0);
+        gclass2(i) = (logDiscrGauss(valid(i,1:11),m1,m2, ...
+	  v1,v2,rPrior,wPrior)>0);
+    end 
+    %% Linear discriminant
+    diskr = fitcdiscr(traing(:,1:11),traing(:,12), ...
+      'DiscrimType','Linear');
+    dclass=predict(diskr,valid(:,1:11));
+
+    %% kNN, k=1 or k=3
+    kNN = fitcknn(traing(:,1:11),traing(:,12), ...
+      'Distance','mahalanobis','NumNeighbors',3);
+    kclass=predict(kNN,valid(:,1:11));
+
+    %% Random forest 30
+    BaggedTreeEns = TreeBagger(200,traing(:,1:11), ...
+      traing(:,12),'NVarToSample',2);
+    [tclass,treeProbs]=predict(BaggedTreeEns,valid(:,1:11));
+    tclass = round(treeProbs(:,2));
+    
+    %% DUMMY
+
+    dummyclass = repmat([0], size(valid, 1), 1);
+
+    %% Standard errors
+    nerrs(h) = sum( nclass1 ~= valid(:,12) )/val;
+    npriorerrs(h) = sum( nclass2 ~= valid(:,12) )/val;
+    gerrs(h) = sum( gclass1 ~= valid(:,12) )/val;
+    gpriorerrs(h) = sum( gclass2 ~= valid(:,12) )/val;
+    derrs(h) = sum( dclass ~= valid(:,12) )/val;
+    kerrs(h) = sum( kclass ~= valid(:,12) )/val;
+    terrs(h) = sum( tclass ~= valid(:,12) )/val;
+
+    fprintf('-- h = %d --\n', h);
+
+    [err_rates(h, 1), f_scores(h, 1)] = ... 
+      errplotg(valid, nclass1, 'naive_noprior');
+    [err_rates(h, 2), f_scores(h, 2)] = ...
+      errplotg(valid, nclass2, 'naive_prior');
+    [err_rates(h, 3), f_scores(h, 3)] = ...
+      errplotg(valid, gclass1, 'gauss_noprior');
+    [err_rates(h, 4), f_scores(h, 4)] = ...
+      errplotg(valid, gclass2, 'gauss_prior');
+    [err_rates(h, 5), f_scores(h, 5)] = ...
+      errplotg(valid, dclass, 'linear_discr');
+    [err_rates(h, 6), f_scores(h, 6)] = ...
+      errplotg(valid, kclass, 'knn3');
+    [err_rates(h, 7), f_scores(h, 7)] = ...
+      errplotg(valid, cellfun(@str2num,tclass), ...
+      'random_forest');
+    [err_rates(h, 8), f_scores(h, 8)] = ...
+      errplotg(valid, dummyclass, 'dummy');
+end
+
+\end{verbatim}
+
+}
+
+\section{Code sample, quality prediction}
+
+The following matlab code shows a cross-validation procedure
+that tests all the methods used. The code used with the test
+set is similar, but it lacks the for-loop that is meant for 
+cross-validation.
+
+{\footnotesize
+
+\begin{verbatim}
+
+winefacts = readtable('../training_dataset.csv');
+winetests = readtable('../test_dataset.csv');
+
+tra=4500; val=500; tes=1000;
+
+%% 10-fold cross-validation %%
+
+derrs = zeros(10,3); qderrs = zeros(10,3); 
+serrs = zeros(10,3); trerrs = zeros(10,3); 
+kerrs = zeros(10,3); lerrs = zeros(10,3); 
+terrs = zeros(10,3); nerrs = zeros(10,3);
+
+for h=1:10
+    %% Boundaries for cross-validation
+    lower = 1+500*(h-1); upper = 500*h;
+    indices = [ 1:(lower-1), ... 
+      (upper+1):5000, lower:upper ];
+
+    %% Set convenient training and validation sets
+    training = winefacts(indices(1:tra),:);
+    validation = winefacts(indices(tra+1:tra+val),:);
+
+    traing = [table2array(training(:,1:11)), ... 
+      strcmp(training.type, 'Red'), training.quality];
+    valid = [table2array(validation(:,1:11)), ...
+      strcmp(validation.type, 'Red'), validation.quality];
+
+    %% Ultimately naive prediction
+    nclass = ones(val,1)*4;
+    
+    %% Linear discriminant
+    diskr = fitcdiscr(traing(:,1:11),traing(:,13), ...
+      'DiscrimType','Linear');
+    dclass=predict(diskr,valid(:,1:11));
+
+    %% Quadratic discriminant
+    qdiskr = fitcdiscr(traing(:,1:11),traing(:,13), ...
+      'DiscrimType','pseudoQuadratic');
+    qdclass = predict(qdiskr,valid(:,1:11));
+    
+    %% SVM
+    svm = fitcecoc(traing(:,1:11),traing(:,13));
+    sclass = predict(svm,valid(:,1:11));
+    
+    %% kNN, k=3
+    kNN = fitcknn(traing(:,1:11),traing(:,13), ...
+      'Distance','mahalanobis','NumNeighbors',3);
+    kclass=predict(kNN,valid(:,1:11));
+
+    %% Random forest
+    BaggedTreeEns = TreeBagger(1000, ...
+      traing(:,1:11),traing(:,13),'NVarToSample',2);
+    tclass=predict(BaggedTreeEns,valid(:,1:11));
+    tclass=cell2mat(tclass); tclass=tclass-48;
+
+    %% Random forest, regression
+    BaggedTreeEns = TreeBagger(1000, ...
+      traing(:,1:11),traing(:,13), ...
+      'NVarToSample',2,'Method','regression');    
+    trclass=round(predict(BaggedTreeEns,valid(:,1:11)));
+        
+    %% Least squares, regression
+    w = lscov(traing(:, 1:11), traing(:, 13));
+    lclass = round(valid(:, 1:11) * w);
+
+    %% Standard errors
+    nerrs(h,1) = sum( nclass ~= valid(:,13) )/val;
+    derrs(h,1) = sum( dclass ~= valid(:,13) )/val;
+    qderrs(h,1) = sum( qdclass ~= valid(:,13) )/val;
+    serrs(h,1) = sum( sclass ~= valid(:,13) )/val;
+    kerrs(h,1) = sum( kclass ~= valid(:,13) )/val;
+    terrs(h,1) = sum( tclass ~= valid(:,13) )/val;
+    trerrs(h,1) = sum( trclass ~= valid(:,13) )/val;
+    lerrs(h,1) = sum( lclass ~= valid(:,13) )/val
+
+    nerrs(h,2) = tot_fscore(nclass,valid(:,13));
+    derrs(h,2) = tot_fscore(dclass,valid(:,13));
+    qderrs(h,2) = tot_fscore(qdclass,valid(:,13));
+    serrs(h,2) = tot_fscore(sclass,valid(:,13));
+    kerrs(h,2) = tot_fscore(kclass,valid(:,13));
+    terrs(h,2) = tot_fscore(tclass,valid(:,13));
+    trerrs(h,2) = tot_fscore(trclass,valid(:,13));
+    lerrs(h,2) = tot_fscore(lclass,valid(:,13));
+
+    nerrs(h,3) = meansqerr(nclass,valid(:,13));
+    derrs(h,3) = meansqerr(dclass,valid(:,13));
+    qderrs(h,3) = meansqerr(qdclass,valid(:,13));
+    serrs(h,3) = meansqerr(sclass,valid(:,13));
+    kerrs(h,3) = meansqerr(kclass,valid(:,13));
+    terrs(h,3) = meansqerr(tclass,valid(:,13));
+    trerrs(h,3) = meansqerr(trclass,valid(:,13));
+    lerrs(h,3) = meansqerr(lclass,valid(:,13));
+end
+
+\end{verbatim}
+
+}
 
 \end{multicols}
 
