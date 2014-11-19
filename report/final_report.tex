@@ -687,7 +687,7 @@ For each evaluated algorithm, the classification error rate, the F-score, and me
 of the observations. These projections can be found in appendix A.
 
 The training and testing datasets can be visualized by projecting into a two-dimensional plane using principal component analysis. Looking at
-figures~\ref{fig:quality_training_pca} and~\ref{fig:quality_testing_pca} contrary to the color visualization, there are no clear groups
+figures~\ref{fig:quality_training_pca} and~\ref{fig:quality_testing_pca} we can see that contrary to the color visualization, there are no clear groups
 formed by different wine qualities.
 
 \begin{figure}[H]
@@ -710,7 +710,7 @@ Table~\ref{table:quality_validation} shows the mean error rates, f-scores, and m
 cross-validation partition on the training data.
 
 \begin{table}[H]
-\caption{Color prediction - validation}
+\caption{Quality prediction - validation}
 \label{table:quality_validation}
 \centering
 \begin{tabular}{cccc}
@@ -733,6 +733,37 @@ cross-validation partition on the training data.
 39.62\% & 0.5742 & 0.0320 \\
 \multicolumn{3}{l}{Linear least squares} \\
 47.24\% & 0.4907 & 0.0362 \\
+\end{tabular}
+\end{table}
+
+\subsubsection{Testing}
+
+Table~\ref{table:quality_testing} shows the mean error rates, f-scores, and mean real distances for each evaluated algorithm when run against the testing data.
+
+\begin{table}[H]
+\caption{Quality prediction - testing}
+\label{table:quality_testing}
+\centering
+\begin{tabular}{cccc}
+\multicolumn{3}{l}{\textbf{Method}} \\
+\textbf{Error rate} & \textbf{F-score} & \textbf{Distance} \\
+\midrule
+\multicolumn{3}{l}{Dummy} \\
+59.20\% & 0.2356 & 0.0286 \\
+\multicolumn{3}{l}{Linear discriminant} \\
+47.70\% & 0.4945 & 0.0249 \\
+\multicolumn{3}{l}{Quadratic discriminant} \\
+53.70\% & 0.4541 & 0.0279 \\
+\multicolumn{3}{l}{Support vector machine} \\
+50.10\% & 0.4279 & 0.0264 \\
+\multicolumn{3}{l}{$1$ nearest neighbor} \\
+41.90\% & 0.5789 & 0.0259 \\
+\multicolumn{3}{l}{Random forest} \\
+35.60\% & 0.6285 & 0.0216 \\
+\multicolumn{3}{l}{Random forest (regression)} \\
+39.50\% & 0.5757 & 0.0226 \\
+\multicolumn{3}{l}{Linear least squares} \\
+48.80\% & 0.4740 & 0.0249 \\
 \end{tabular}
 \end{table}
 
