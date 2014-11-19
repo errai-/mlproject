@@ -516,11 +516,48 @@ of methods to be combined, how complex this process is. However, maximally 3 met
 
 \subsection{Prediction of Quality}
 
+There are various possible problems that can arise in the prediction of the quality. One initial issue is that it is
+not known, whether it is more favorable to use classification or regression algorithms. This has to be also tested
+to some extent, to have a good picture of the two different approaches. Otherwise there are much similarities to the 
+prediction of type with the distinction that many aspects are now a bit more complicated. There are more classes, which
+makes things more difficult in many ways.
 
 \subsubsection{Classification}
 
+Various algorithms for classification is used for the prediction of quality. Also in this case linear discrimination is used, as well 
+as the support vector machine and a quadratic discrimination. This is mostly ruled by the complexity of the problem. It is instructive
+to probe different discrimination methods, to determine if they are useful in the current problem. The quadratic discriminant could
+actually be helpful in this case because of the hypothetic complexity of the problem.
+
+For a basic classifier there is again a \emph{constant class} classifier but this time no Gaussian classifiers are used. This decision
+is affected by the fact that the Gaussian nature of the data is not strong. Additionally, for seven classes this type of classification
+is not easily performed. Univariate classification can be directly left out, since there is much room for problematic behaviour when
+many classes are fitted into one dimension. On the other hand the full mutlivariate case is cumbersome to use and is not worth the 
+additional effort, since other algorithms are probably better.
+
+Additionally, also the $k$ Nearest Neighbors and random forest classification are used once again. In principle, there are only minor
+differences when compared to the use of these algorithms in the case of type prediction.
 
 \subsubsection{Regression}
+
+For comparison, regression algorithms are used. There are two relevant questions: how does a regression algorithm perform in the context
+of regression and how does it perform in the context of classification. For the context of regression, the additional score type was
+given. If a regression algorithm seems to perform well, assessed in one way or another, it may be used for the final model.
+
+The random forest algorithm is powerful and convenient to use and it can be applied also for regression. Its usage is simple,
+since the only difference to classification is that the final result is not an integer. The result is rounded to the nearest
+integer, to make it compatible with the \emph{real} results.
+
+In addition, the least squares method is utilized, as shown in \ref{method:leastsquare}. This is somewhat compulsory, taking
+into account that the least squares method is very popular in regression application. This algorithm can be conveniently
+handled with matrix calculations.
+
+\subsubsection{PCA and Combining algorithms}
+
+With the experience gained from type prediction it is determined, whether it is useful to try PCA 
+in this context. On the other hand, algorithm combination has the same rules as in the case of 
+type. If there are algorithms that have a somewhat similar performance level, they should be
+combined. If one algorithm is clearly better than the others, it can be used alone for the final predictions.
 
 % \begin{table}[H]
 % \caption{My current knowledge of tables}
