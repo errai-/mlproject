@@ -29,12 +29,13 @@ for h=1:10
 
         %% Standard errors
         errs(h,(i+1)/2) = sum( kclass ~= valid(:,12) )/val;
-        % fscores(h,(i+1)/2) = ;
+        [w,scores] = evaluate_quality( kclass, valid(:,12) );
+        fscores(h,(i+1)/2) = w'*scores/(sum(w));
     end
 end
 
 mean(errs)
-%mean(fscores)
+mean(fscores)
 
 
 %% Testing: %%
@@ -43,6 +44,7 @@ training = [table2array(winefacts(:,1:11)), strcmp(winefacts.type, 'Red')];
 testing = [table2array(winetests(:,1:11)), strcmp(winetests.type, 'Red')];
 
 Errs = zeros(1,26);
+Fscores = zeros(1,26);
 
 % Use whole training data for final training:
 
@@ -53,9 +55,17 @@ for i = 1:2:51
 
     %% Standard errors
     Errs((i+1)/2) = sum( kclass ~= testing(:,12) )/tes;
-    % fscores(h,(i+1)/2) = ;
+    [w,scores] = evaluate_quality( kclass, testing(:,12) );
+    Fscores((i+1)/2) =  w'*scores/sum(w);
 end
 
 % errors:
 Errs
+Fscores
+hold off; hold on;
+plot(1:2:51,1-mean(fscores),'r');
+plot(1:2:51,mean(errs),'b');
+xlabel('k');
+ylabel('1-fscore/error rate');
+legend('1-fscore','error rate');
 
