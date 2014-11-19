@@ -1,4 +1,4 @@
-function errplot(facts, preds, name)
+function [rate, fscore] = errplot(facts, preds, name)
 
 winefacts = facts;
 
@@ -39,7 +39,8 @@ fprintf('Red %4d %4d\n', size(redOK, 1), size(redNO, 1));
 fprintf('Whi %4d %4d\n', size(whiOK, 1), size(whiNO, 1));
 
 nerrs = size(redNO, 1) + size(whiNO, 1);
-fprintf('Error rate: %.2f%%\n', nerrs / (size(traing, 1) * 1.0) * 100.0);
+rate = nerrs / (size(traing, 1) * 1.0) * 100.0;
+fprintf('Error rate: %.2f%%\n', rate);
 
 [ fscw, fscs ] = evaluate_quality(preds, traing(:, 12));
 fscore = sum(fscw .* fscs) / sum(fscw);

@@ -9,7 +9,10 @@ tra=4500; val=500; tes=1000;
 %% 10-fold cross-validation %%
 
 nerrs = 1:10; npriorerrs = 1:10; gerrs = 1:10; gpriorerrs = 1:10;
-derrs = 1:10; kerrs = 1:10; terrs = 1:10; unerrs = 1:10;
+derrs = 1:10; kerrs = 1:10; terrs = 1:10;
+
+err_rates = repmat([0], 10, 8);
+f_scores = repmat([0], 10, 8);
 
 for h=1:10
     %% Boundaries for cross-validation
@@ -26,9 +29,6 @@ for h=1:10
     %% Prior values, if needed
     rPrior = sum(traing(:,12))/tra; wPrior = 1-rPrior;
 
-    %% Ultimate naivity
-    unclass = zeros(val,1);
-    
     %% Naive (only 1 variable) Gaussian discrimination
     m1 = mean(traing(traing(:,12)==1,8)); % Reds
     v1 = var(traing(traing(:,12)==1,8));
@@ -63,8 +63,11 @@ for h=1:10
     BaggedTreeEns = TreeBagger(200,traing(:,1:11),traing(:,12),'NVarToSample',2);
     [tclass,treeProbs]=predict(BaggedTreeEns,valid(:,1:11));
 
+    %% DUMMY
+
+    dummyclass = repmat([0], size(valid, 1), 1);
+
     %% Standard errors
-    unerrs(h) = sum( unclass ~= valid(:,12) )/val;
     nerrs(h) = sum( nclass1 ~= valid(:,12) )/val;
     npriorerrs(h) = sum( nclass2 ~= valid(:,12) )/val;
     gerrs(h) = sum( gclass1 ~= valid(:,12) )/val;
@@ -72,11 +75,32 @@ for h=1:10
     derrs(h) = sum( dclass ~= valid(:,12) )/val;
     kerrs(h) = sum( kclass ~= valid(:,12) )/val;
     terrs(h) = sum( round(treeProbs(:,2)) ~= valid(:,12) )/val;
+
+    fprintf('-- h = %d --\n', h);
+
+    [err_rates(h, 1), f_scores(h, 1)] = errplotg(valid, nclass1, 'naive_noprior');
+    [err_rates(h, 2), f_scores(h, 2)] = errplotg(valid, nclass2, 'naive_prior');
+    [err_rates(h, 3), f_scores(h, 3)] = errplotg(valid, gclass1, 'gauss_noprior');
+    [err_rates(h, 4), f_scores(h, 4)] = errplotg(valid, gclass2, 'gauss_prior');
+    [err_rates(h, 5), f_scores(h, 5)] = errplotg(valid, dclass, 'linear_discr');
+    [err_rates(h, 6), f_scores(h, 6)] = errplotg(valid, kclass, 'knn3');
+    [err_rates(h, 7), f_scores(h, 7)] = errplotg(valid, cellfun(@str2num,tclass), 'random_forest');
+    [err_rates(h, 8), f_scores(h, 8)] = errplotg(valid, dummyclass, 'dummy');
 end
+
+fprintf('ERR_RATES\n');
+
+mean(err_rates)
+
+fprintf('F SCORES\n');
+
+mean(f_scores)
+
+fprintf('END');
 
 %% Output errors
 % logarithmic discrimination with and without prior
-%[mean(unerrs),mean(nerrs),mean(npriorerrs),mean(gerrs),mean(gpriorerrs)]
+%[mean(nerrs),mean(npriorerrs),mean(gerrs),mean(gpriorerrs)]
 % equal, mean from loop, and afterwards, minimal possible error for each h
 %[mean(derrs),mean(kerrs),mean(terrs),mean(serrs)] % Single errors
 
@@ -101,14 +125,12 @@ gv2 = cov(training(training(:,12)==0,1:11));
 % Linear discriminant
 diskr = fitcdiscr(training(:,1:11),training(:,12),'DiscrimType','Linear');
 % kNN, k=1 or k=3
-kNN = fitcknn(training(:,1:11),training(:,12),'Distance','mahalanobis','NumNeighbors',1);
+kNN = fitcknn(training(:,1:11),training(:,12),'Distance','mahalanobis','NumNeighbors',3);
 % Random forest
 BaggedTreeEns = TreeBagger(200,training(:,1:11),training(:,12),'NVarToSample',2);
 
 %% Predict:
 
-% Ultimate naivity
-unclass = zeros(tes,1);
 % Naive discrimination
 nclass1 = (logDiscrNaive( testing(:,8),m1,m2,v1,v2,1,1)>0);
 nclass2 = (logDiscrNaive( testing(:,8),m1,m2,v1,v2,rPrior,wPrior)>0);
@@ -125,16 +147,18 @@ kclass=predict(kNN,testing(:,1:11));
 % Random forest
 [tclass,treeProbs]=predict(BaggedTreeEns,testing(:,1:11));
 
+dummyclass = repmat([0], size(testing, 1), 1);
+
 % errors:
 [sum(nclass1~=testing(:,12)),sum(nclass2~=testing(:,12)),sum(gclass1~=testing(:,12)),sum(gclass2~=testing(:,12))]/tes
 [sum(dclass~=testing(:,12)),sum(kclass~=testing(:,12)),sum(round(treeProbs(:,2))~=testing(:,12))]/tes
 
-
-figure(1); errplot(nclass1, 'naive_noprior');
-figure(2); errplot(nclass2, 'naive_prior');
-figure(3); errplot(gclass1, 'gauss_noprior');
-figure(4); errplot(gclass2, 'gauss_prior');
-figure(5); errplot(dclass, 'linear_discr');
-figure(6); errplot(kclass, 'knn1');
-figure(7); errplot(cellfun(@str2num,tclass), 'random_forest');
-figure(8); errplot(unclass, 'ultimately_naive');
+valid = testing;
+errplot(valid, nclass1, 'naive_noprior');
+errplot(valid, nclass2, 'naive_prior');
+errplot(valid, gclass1, 'gauss_noprior');
+errplot(valid, gclass2, 'gauss_prior');
+errplot(valid, dclass, 'linear_discr');
+errplot(valid, kclass, 'knn3');
+errplot(valid, cellfun(@str2num,tclass), 'random_forest');
+errplot(valid, dummyclass, 'dummy');
