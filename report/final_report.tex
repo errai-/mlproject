@@ -430,7 +430,7 @@ This is, however, problematic, since only the members of one class are predicted
 could give a similar error rate as the given naive assumption, but it would probably also have a non-zero success
 rate for the other classes. This is preferable and, therefore, a more complicated measure of goodness, \emph{f-score}, is used:
 \begin{equation}
- \text{f-score} = \frac{ 2 \text{precision}*\text{recall} }{\text{precision} + \text{recall}}.
+ \text{f-score} = \frac{ 2 \cdot \text{precision} \cdot \text{recall} }{\text{precision} + \text{recall}}.
 \end{equation}
 This measure is used for each class within the study. To get the total f-score of a prediction, a weighted sum of
 the f-scores of the classes is taken. The weights are normalized and proportional to the amount of samples in
@@ -612,7 +612,7 @@ Table~\ref{table:color_validation} shows the mean error rates and F scores for e
 cross-validation partition on the training data.
 
 \begin{table}[H]
-\caption{Color prediction - validation set}
+\caption{Color prediction - validation}
 \label{table:color_validation}
 \begin{tabular}{ccc}
 \textbf{Method} & \textbf{Error rate} & \textbf{F-score}\\
@@ -637,55 +637,29 @@ Dummy & 18.12\% & 0.737 \\
 
 \subsubsection{Testing}
 
- -- naive_noprior -- 
-      OK   NO
-Red  159   37
-Whi  541  263
-Error rate: 30.00%
-F-score:    0.730325
- -- naive_prior -- 
-      OK   NO
-Red   99   97
-Whi  645  159
-Error rate: 25.60%
-F-score:    0.756347
- -- gauss_noprior -- 
-      OK   NO
-Red  194    2
-Whi  783   21
-Error rate: 2.30%
-F-score:    0.977394
- -- gauss_prior -- 
-      OK   NO
-Red  194    2
-Whi  787   17
-Error rate: 1.90%
-F-score:    0.981261
- -- linear_discr -- 
-      OK   NO
-Red  195    1
-Whi  802    2
-Error rate: 0.30%
-F-score:    0.997003
- -- knn3 -- 
-      OK   NO
-Red  195    1
-Whi  800    4
-Error rate: 0.50%
-F-score:    0.995014
- -- random_forest -- 
-      OK   NO
-Red  194    2
-Whi  803    1
-Error rate: 0.30%
-F-score:    0.996997
- -- dummy -- 
-      OK   NO
-Red    0  196
-Whi  804    0
-Error rate: 19.60%
-F-score:    0.716647
-
+\begin{table}[H]
+\caption{Color prediction - testing}
+\label{table:color_validation}
+\begin{tabular}{ccc}
+\textbf{Method} & \textbf{Error rate} & \textbf{F-score}\\
+\midrule
+\multicolumn{3}{c}{\textbf{Naive Gaussian}} \\
+Uniform prior & 30.00\% & 0.730 \\
+Proportional prior & 25.60\% & 0.756 \\
+\\
+\multicolumn{3}{c}{\textbf{Multivariate Gaussian}} \\
+Uniform prior & 2.30\% & 0.977 \\
+Proportional prior & 1.90\% & 0.981 \\
+\\
+\multicolumn{3}{c}{\textbf{Other methods}} \\
+Linear discrimination & 0.30\% & 0.997 \\
+$3$ nearest neighbours & 0.50\% & 0.995 \\
+Random forest & 0.30\% & 0.997 \\
+Hybrid & 0.20\% & 0.998 \\
+\\
+Dummy & 19.60\% & 0.717 \\
+\end{tabular}
+\end{table}
 
 \subsection{Prediction of quality}
 
