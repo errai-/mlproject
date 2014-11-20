@@ -1036,7 +1036,57 @@ PCA projections that show, which predictions have failed for each algorithm.
 %----------------------------------------------------------------------------------------
 \section{PCA figures, quality prediction}\label{appendix:qualitypcakuvet}
 PCA projections that show, which predictions have failed for each algorithm.
+Dots denote correct predictions, while triangles denote incorrect predictions.
+A red triangle means that the predicted quality was too high, while a blue
+triangle means that it was too low.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{rankpca/dummy}
+\caption{Quality prediction results: dummy}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{rankpca/lindiscr}
+\caption{Quality prediction results: linear discriminant}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{rankpca/quaddiscr}
+\caption{Quality prediction results: quadratic discriminant}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{rankpca/svm}
+\caption{Quality prediction results: support vector machine}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{rankpca/knn1}
+\caption{Quality prediction results: $1$ nearest neighbor}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{rankpca/randomforest}
+\caption{Quality prediction results: random forest}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{rankpca/randomforestreg}
+\caption{Quality prediction results: random forest (regression)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{rankpca/ols}
+\caption{Quality prediction results: linear least squares}
+\end{figure}
 
 \section{Code sample, color prediction}\label{appendix:colorcode}
 
