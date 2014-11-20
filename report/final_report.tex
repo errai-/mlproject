@@ -46,11 +46,11 @@
 
 % otsikosta saa 2/40 p
 % A search for well-performing algorithms  
-\title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{Prediction of wine type and quality using chemical characteristics}}
+\title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{Prediction of the type and quality of wines using chemical characteristics}}
 
 \author{
 \large
-\textsc{A search for well-performing algorithms in type and quality prediction}\\[2mm]
+\textsc{A search for well-performing learning algorithms}\\[2mm]
 \textsc{Hannu Siikonen, Mikko Perttunen}\\[2mm]
 \vspace{-5mm}
 }
@@ -69,16 +69,16 @@
 \begin{abstract}
 % myöskin 2/40 p, 100-200 sanaa
 The type and quality of wines is to be predicted using machine learning techniques. The prediction
-of type is a pure classification problem, but the prediction of quality can be viewed both as
+of type is a pure classification problem, but the prediction of quality can be viewed either as
 a classification or a regression problem. Various classification algorithms are equipped
-for the analyses of the two problems and also some regression algorithms are used for the study
+for the analyses of the problems, as well as regression algorithms that are used for the study
 of the quality. It turns out that the prediction of the type is a problem that can be solved
 with an excellent accuracy. A hybrid model is constructed for making the final predictions
 of the type. On the contrary, determining the quality of a wine is challenging. Different
 algorithms are tested out and the final result is obtained using only one learning
 algorithm. The obtained model performs somewhat well, but there is room for optimization. 
 The results are satisfactory, but this kind of a machine learning problem provides a source
-for endless study.
+of endless study.
 
 \end{abstract}
 
@@ -96,22 +96,20 @@ for endless study.
 
 The goal of this study is to predict the type and the quality of a wine by making use of a given dataset.
 This is realized by comparing the strengths and weaknesses of different machine learning 
-and statistical modeling algorithms when applied to the present data. Optimized learning algorithms
-are then revised based on the performance of the different methods.
+and statistical modeling algorithms when applied to the present data.
  
 All possible algorithms cannot be considered in these analyses. Nevertheless,
 a variety of methods is used. This is important when dealing with a randomly chosen dataset, since according to
 Wolpert \todo{\LaTeX-viittaus}, there is no simple way to predetermine which
 learning algorithm yields the best results with the data. It can be difficult to assess,
 which method has an inductive bias that corresponds best to the data.
-The evaluated algorithms were selected based on their diversity and using some initial hypotheses.
 
-For the sake of variety, the performance of both regression and classification algorithms is evaluated.
+For the sake of diversity, the performance of both regression and classification algorithms is evaluated.
 However, the focus is on classification algorithms. 
 Both the prediction of the type and the quality of the wine can be considered
 classification problems, whereas only the quality can be studied also using regression. It is obvious that
-there is some correlation between neighboring classes, that is, quality values that differ by only one point. This implies that
-using regression is a good idea. On the other hand the integer presentation of the quality makes using regression cumbersome.
+there is some correlation between qualities that differ only by one point. This implies that
+using regression is beneficial. On the other hand the integer presentation of the quality makes using regression cumbersome.
 
 The used dataset is derived from the so called \emph{Vinho verde} dataset by Cortez et al. \cite{CorCer09}.
 It consists of 6000 observations, each describing an individual wine. For each one of them, 11 variables are provided in addition
@@ -122,20 +120,17 @@ and the quality is an integer between 1 and 7. 5000 observations are used as tra
 Wine data is in general a favored object for study in the field of machine learning. There have been various studies
 on the subject, for instance those by Cortez et al. \cite{WQA}, \cite{CorCer09} 
 and Appalsamy et al. \cite{Appalsami}. One motive for this are the large and growing markets of the wine industry.
-Being able to predict the quality of a wine without the need for a wine taster, as well as a deeper understanding
-of the properties of a good wine, induce much potential for profit. On the other hand, the problem of predicting
+Being able to predict the quality of a wine without the need for a wine taster, as well as gaining a deeper understanding
+of the properties of a good wine induce much potential for profit. On the other hand, the problem of predicting
 the quality of a wine is intriguing from a machine learning perspective. The quality is determined by human taste,
 a very complex and subjective system, difficult to predict only by using a limited set of chemical properties.
 One more reason to explain the popularity of wine quality predictions is the fact that there is a lot of data
 on wines available on the Internet.
 
-This task is interesting, since the prediction problem is twofold: both a clear physical property and an abstract, subjective property
+The task is interesting, since it is twofold. Both a distinct physical property and an abstract, subjective property
 are to be predicted. The former should be relatively easily predictable, assuming that a sufficient set
-of chemical properties is given. The prediction of the quality, on the other hand, can be a very challenging task.
-In general, these kinds of hard problems are often ones that are good for benchmarking machine learning algorithms.
-In addition to that, with such difficult problems a great interest exists for a decently performant prediction algorithm,
-since prior to sufficient computing power and analysis methods they have been insolvable. Thus, this study provides a
-good review of the features of modern machine learning algorithms when applied to a complex dataset.
+of chemical properties is given. On the other hand, the latter can be very challenging.
+In general, this kind of a difficult problem is good for benchmarking machine learning algorithms.
  
 \section{Methods}
 % 8/40 p
@@ -144,8 +139,8 @@ good review of the features of modern machine learning algorithms when applied t
 
 For predicting the behavior of the wine data multiple machine learning methods are equipped.
 To some extent the same classification algorithms with minor differences are used for both
-the analysis of the type and the analysis of the quality of wines. On top of this, to augur the 
-quality, some regression algorithms are utilized. The basic properties of the used algorithms
+the analyses. Additionally, to augur the 
+quality also regression algorithms are utilized. The basic properties of the used algorithms
 are described in this section. The theoretical background of most of the algorithms can be found
 in a basic reference, such as Ref. \cite{Alpaydin}. 
 
@@ -153,10 +148,10 @@ in a basic reference, such as Ref. \cite{Alpaydin}.
 
 \subsubsection{Naive Gaussian discrimination} \label{method:naiivig}
 
-While taking initial steps with a dataset, it is usually instructive to begin with a simple
-learning algorithm. This could mean using a model that always returns a constant value or
-class. A slightly more complicated simple model is provided by using only one of the eleven prediction variables
-given in the data. The initial hypothesis is that for some of the variables ($x$) all classes are somewhat
+It is instructive to begin the analysis of the dataset with a simple
+learning algorithm. A most simple model always returns a constant value or
+class. A slightly more complicated simple model is provided by using only one of the eleven prediction variables. 
+The initial hypothesis is that for some of the variables ($x$) all classes are somewhat
 normally distributed. It follows that by calculating the mean value 
 $\mu$ and variance $\sigma^2$ of each class using the training set, the probability distributions of 
 each class $k$ is obtained:
@@ -168,7 +163,7 @@ can be taken:
 \begin{equation}\label{posterior}
  p(\mu_k,\sigma_k|x) \propto p(x|\mu_k,\sigma_k) p(\mu_k,\sigma_k),
 \end{equation}
-where $p(\mu_k,\sigma_k) = p(\theta_k)$ is simply obtained as the fraction of the class $k$ in the 
+where $p(\mu_k,\sigma_k) = p(\theta_k)$ is obtained as the fraction of the class $k$ in the 
 training set. This can be transformed conveniently into a discriminant, by choosing a reference
 class $j = k$:
 \begin{equation}\label{naiividiskr}
@@ -186,8 +181,7 @@ it is obtained
 The multivariate Gaussian discriminant operates analogically to the one-dimensional
 case, extending the discriminant function to eleven variables. It determines the class of a sample by
 comparing the probabilities of it belonging to each class, when each
-class is modeled using a multivariate Gaussian distribution. This can be problematic,
-since many real-world variables have a clearly non-Gaussian distribution.
+class is modeled using a multivariate Gaussian distribution.
 
 The Gaussian distributions are determined based on training data.
 The mean vector $\v{\mu}_k$ and covariance matrix $\mathbf{\Sigma}_k$ are calculated for each class.
@@ -211,15 +205,14 @@ A discriminant can be constructed parallelly to Eqs. \eqref{naiividiskr} and \eq
 \end{equation}
 Again, the class with the largest discriminant $g_k(\v{x})$ indicates the prediction of class, $k$.
 
-\subsubsection{$k$ nearest neighbours}\label{method:knn}
+\subsubsection{$k$ Nearest Neighbors}\label{method:knn}
 
-The $k$ nearest neighbours classifier is a non-parametric classifier. Only a
-distance function between the points in the variable space is required.
+The $k$ Nearest Neighbors classifier is non-parametric and it requires only a
+distance function between the points in the variable space.
 The classification given by $k$ nearest neighbours for a new point $\v{x}$ is then found by 
-selecting the $k$ points closest to $x$ according to the distance function and
-picking the most common class among the $k$ points. The training set is fully
-stored in memory. The samples in it are used for the nearest neighbour study
-of the points in the validation or the test set.
+selecting the $k$ points closest to $\v{x}$ according to the distance function and
+picking the most common class among these points. The training set is fully
+stored in memory. The samples in it are used as the set of possible neighbors of kNN.
 
 Selecting a good distance function is important, especially when many variables
 are used for the prediction. The distributions of the
@@ -232,12 +225,9 @@ distance function\cite[p.~88]{Alpaydin}:
   D_M(\v{x}, \v{y}) = \sqrt{(\v{x}-\v{y})^T \Sigma^{-1} (\v{x}-\v{y})},
 \end{equation}
 
-where $\Sigma$ is the covariance matrix $\v{x}$ int the training set.
+where $\Sigma$ is the covariance matrix $\v{x}$ in the training set.
 This normalizes the distances in the different dimensions of
 the variable space and also takes into account unnecessary correlations.
-The Mahalanobis distance is an intuitive distance measure for an arbitrarily
-scaled space. It appears for instance in the exponent of the multivariate
-Gaussian distribution of Eq. \eqref{monigauss}.
 
 If the class probabilities $p_c(\v{x})$ for a point $\v{x}$ are required, these can
 be calculated using the nearest neighbours of it. If the frequency of a class $c$
@@ -251,17 +241,14 @@ within the $k$ nearest neighbours is $k_c$, the probability is simply
 Methods that rely on discrimination can model directly the class discriminants instead of
 the class probabilities. In linear discrimination the discriminant for a class $k$ is linear:
 \begin{equation}
- g_k(\v{x}) = \v{w}_k^T v{x} + w_{k0}.
+ g_k(\v{x}) = \v{w}_k^T \v{x} + w_{k0}.
 \end{equation}
 The basic theory of linear discrimination is not deeper than this: the goal is to find such
-coefficients $\v{w}_k$, $w_{k0}$ that the classification error is minimal. Usually this has
-to be done numerically for instance with the steepest descent algorithm. There are multiple 
+coefficients $\v{w}_k$, $w_{k0}$ that the classification error is minimal. This is
+done numerically for instance with the steepest descent algorithm. There are multiple 
 ways to perform the optimization. One example
 is logistic discrimination, in which the class probabilities are defined by a connection to the class
-probabilities. The discriminant of a class $k$ is a logarithm of the fraction of the likelihood of
-this class divided by the likelihood of a reference class. This definition gives some convenient 
-properties for the model from the viewpoint of numerical solutions. However, also other
-approaches may be used.
+probabilities.
 
 \subsubsection{Quadratic discrimination}\label{method:qdiskr}
 
@@ -270,9 +257,7 @@ Quadratic discrimination is otherwise similar to linear discrimination, but it e
  g_k(\v{x}) = \v{x}^T \mathbf{W}_k \v{x} + \v{w}_k^T \v{x} + w_{k0}.
 \end{equation}
 Because of the quadratic form, the search for optimal discriminants is much more complicated than with linear
-discriminants. Additionally, the additional complexity brought by the quadratic form may be unnecessary.
-Nevertheless, quadratic discrimination provides a good algorithm for comparison, if an efficient algorithm
-for it is available.
+discriminants. Additional complexity brought by the quadratic form may be unnecessary.
 
 \subsubsection{Support vector machine}\label{method:svm}
 
@@ -285,10 +270,10 @@ to make the same approach work.
 
 Random forest \cite{Forest} is an ensemble learning method that equips an ensemble of classification trees. Each tree 
 in the ensemble does classification using only a chosen number of input variables. This could be for
-instance the square root of the total amount of classification variables. For this kind of an ensemble of trees
-the trees themselves are usually unpruned. The trees themselves are simply ordinary classification trees:
-they use the given variables and split the branches until a desired amount of purity or other conditions
-are fulfilled for the training set. It is important that there is a sufficient amount of classification
+instance the square root of the total amount of classification variables. For this kind of an ensemble
+the trees themselves are usually unpruned ordinary classification trees.
+They use the given variables and split the branches until a desired amount of purity or other conditions
+are fulfilled. It is important that there is a sufficient amount of classification
 trees in the ensemble. With a too small amount of trees sufficient statistics is not reached and the algorithm
 does not perform optimally.
 
@@ -306,7 +291,7 @@ more a continuous behaviour.
 
 The linear (or ordinary) least squares method is a regression algorithm that
 finds a linear fit for one variable as a function of multiple variables: $\hat{y} = \v{a}^T \v{x}+b$. 
-The vector $\v{a}$ and the constant $b$ are such that in the training set $\sum (y - \hat{y})$ is 
+The vector $\v{a}$ and the constant $b$ are such that in the training set $\sum (y - \hat{y})^2$ is 
 minimized, hence the name least squares.
 
 The problem can be conveniently presented in a matrix form. Let $\mathbf{X}$ be a matrix
@@ -323,10 +308,6 @@ It can be shown that the optimal solution is given by
 \begin{equation}
  \v{w} = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T y.
 \end{equation}
-In this form an arbitrary matrix $\mathbf{X}$ can be used. That is,
-$\mathbf{X}$ may hold only the given variables in a basic form, but also for instance higher
-exponents of the variables can be inserted into this matrix. Thus, it is relatively simple
-to control the complexity of the model.
 
 \subsection{PCA}\label{method:pca}
 
@@ -379,10 +360,8 @@ The best weights are chosen by validation. With only two learning algorithms, on
 % Necessary for applying the methods to the data: pre-proc., validation of params (cross-validation)
 % No results here!
 
-The study is divided into two different problems: the prediction of the type (color) and the quality (ranking)
-of wines. Of these the latter is a considerably more demanding task, since the quality consists of more classes than the type and the
-ruling mechanisms of the human taste are complicated. To probe the data, at first simple algorithms are used for 
-both the tasks. This is a good way of keeping the analysis reasonable as
+To probe the data, at first simple algorithms are used for
+both the prediction tasks. This is a good way of keeping the analysis reasonable as
 the hypothetically inferior algorithms give a starting level for the required performance. If a hypothetically
 well-performing algorithm performs similarly as a naive algorithm, it can be rejected.
 
@@ -394,17 +373,15 @@ on the actual properties of the algorithms instead of programming them.
 
 Method validation is done using $k$-fold cross validation with $k = 10$. The training set is partitioned in 10 equally sized parts. 
 Validation is done ten times using each partition once as a validation set, while the other nine
-sections function as training sets. The mean error of the 10 different validations is used as a measure
+sections function as a training set. The mean error of the 10 different validations is used as a measure
 of goodness of an algorithm.
 
 Cross-validation can be a bit problematic if it is used both for choosing parameter values for a single algorithm (e.g., the value of $k$
-for the kNN-algorithm) and evaluating the goodness of the different algorithm. In such a case the choice of the parameter value makes the estimator
+for the kNN-algorithm) and evaluating the goodness of the different algorithms. In such a case the choice of the parameter value makes the estimator
 of goodness biased, which is harmful when making decisions between the algorithms. However, with the given amount of data
 the 10-fold cross-validation is a good choice. Since $9/10$ of the whole training data is used as a training set at a time,
 the situation resembles that of the actual final training phase. While training the final algorithm, the whole training dataset
 is used. On the other hand, the small size of a single validation set is averaged out by considering all 10 different validation sets.
-The overlap of the ten training sets lowers the quality of validation slightly. Nonetheless, it is not easy to use a given amount
-of training data more economically than with $k$-fold cross-validation.
 
 \subsection{Algorithm evaluation}
 
@@ -417,12 +394,12 @@ make the second algorithm perform poorly.
 
 Some of the algorithms are used for the study of both problems while others are only applied to one of them.
 Knowledge of chemistry or any other kind of preliminary knowledge of wines is not used. The tasks are treated purely as machine learning
-problems. The greatest external utility in this context is the set of the variables that are used for the predictions,
-which were supplied in beforehand. PCA and similar methods are useful
+problems. The greatest external utility in this context is the set of the variables that is used for the predictions. 
+PCA and similar methods are useful
 for studying, whether there is some useless variables in the given dataset. Additionally, the quality of the final testing results imply, whether the supplied
 data was sufficient.
 
-For evaluating the performance of different algorithms a couple of different methods are used. The 
+For evaluating the performance of different algorithms three methods are used. The 
 most basic measure is the total amount of false augurs, when the problem is treated as classification.
 This does not give a complete picture of the situation. For instance
 with classification problems one can predict that all the samples in the test data belong to one class. If
@@ -986,54 +963,35 @@ Triangles indicate failed predictions.
 \centering
 \includegraphics[width=0.5\textwidth]{colorpca/dummy}
 \caption{Color prediction results: dummy}
-\end{figure}
-
-\begin{figure}[H]
-\centering
 \includegraphics[width=0.5\textwidth]{colorpca/naive_noprior}
 \caption{Color prediction results: naive Gaussian, uniform prior}
-\end{figure}
-
-\begin{figure}[H]
-\centering
 \includegraphics[width=0.5\textwidth]{colorpca/naive_prior}
 \caption{Color prediction results: naive Gaussian, proportional prior}
 \end{figure}
+
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\textwidth]{colorpca/gauss_noprior}
 \caption{Color prediction results: multivariate Gaussian, uniform prior}
-\end{figure}
-
-\begin{figure}[H]
-\centering
 \includegraphics[width=0.5\textwidth]{colorpca/gauss_prior}
 \caption{Color prediction results: multivariate Gaussian, proportional prior}
-\end{figure}
-
-\begin{figure}[H]
-\centering
 \includegraphics[width=0.5\textwidth]{colorpca/linear_discr}
 \caption{Color prediction results: linear discriminant}
 \end{figure}
+
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\textwidth]{colorpca/knn5}
 \caption{Color prediction results: $5$ nearest neighbors}
-\end{figure}
-
-\begin{figure}[H]
-\centering
+\vspace{4.1mm}
 \includegraphics[width=0.5\textwidth]{colorpca/random_forest}
 \caption{Color prediction results: random forest}
-\end{figure}
-
-\begin{figure}[H]
-\centering
+\vspace{4.1mm}
 \includegraphics[width=0.5\textwidth]{colorpca/cvv2f_f}
 \caption{Color prediction results: hybrid}
+
 \end{figure}
 
 %----------------------------------------------------------------------------------------
@@ -1047,10 +1005,6 @@ triangle means that it was too low.
 \centering
 \includegraphics[width=0.5\textwidth]{rankpca/dummy}
 \caption{Quality prediction results: dummy}
-\end{figure}
-
-\begin{figure}[H]
-\centering
 \includegraphics[width=0.5\textwidth]{rankpca/lindiscr}
 \caption{Quality prediction results: linear discriminant}
 \end{figure}
@@ -1059,37 +1013,24 @@ triangle means that it was too low.
 \centering
 \includegraphics[width=0.5\textwidth]{rankpca/quaddiscr}
 \caption{Quality prediction results: quadratic discriminant}
-\end{figure}
-
-\begin{figure}[H]
-\centering
 \includegraphics[width=0.5\textwidth]{rankpca/svm}
 \caption{Quality prediction results: support vector machine}
-\end{figure}
-
-\begin{figure}[H]
-\centering
 \includegraphics[width=0.5\textwidth]{rankpca/knn1}
 \caption{Quality prediction results: $1$ nearest neighbor}
+
 \end{figure}
+
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\textwidth]{rankpca/randomforest}
 \caption{Quality prediction results: random forest}
-\end{figure}
-
-\begin{figure}[H]
-\centering
 \includegraphics[width=0.5\textwidth]{rankpca/randomforestreg}
 \caption{Quality prediction results: random forest (regression)}
-\end{figure}
-
-\begin{figure}[H]
-\centering
 \includegraphics[width=0.5\textwidth]{rankpca/ols}
 \caption{Quality prediction results: linear least squares}
 \end{figure}
+
 
 \section{Code sample, color prediction}\label{appendix:colorcode}
 
