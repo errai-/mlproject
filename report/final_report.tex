@@ -44,13 +44,13 @@
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
 
-% TODO: otsikosta saa 2/40 p, voi ansaita hiontaa kun työ on pidemmmällä. 
-
-\title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{Predicting wine color and quality using chemical characteristics}}
+% otsikosta saa 2/40 p
+% A search for well-performing algorithms  
+\title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{Prediction of wine type and quality using chemical characteristics}}
 
 \author{
 \large
-\textsc{A comparison of machine learning methods}\\[2mm]
+\textsc{A search for well-performing algorithms in type and quality prediction}\\[2mm]
 \textsc{Hannu Siikonen, Mikko Perttunen}\\[2mm]
 \vspace{-5mm}
 }
@@ -1115,11 +1115,13 @@ f_scores = repmat([0], 10, 8);
 for h=1:10
     %% Boundaries for cross-validation
     lower = 1+500*(h-1); upper = 500*h;
-    indices = [ 1:(lower-1), (upper+1):5000, lower:upper ];
+    indices = [ 1:(lower-1), (upper+1):5000, ...
+      lower:upper ];
 
     %% Set convenient training and validation sets
     training = winefacts(indices(1:tra),:);
-    validation = winefacts(indices(tra+1:tra+val),:);
+    validation = ...
+      winefacts(indices(tra+1:tra+val),:);
 
     traing = [table2array(training(:,1:11)), ... 
       strcmp(training.type, 'Red')];
@@ -1127,35 +1129,41 @@ for h=1:10
       strcmp(validation.type, 'Red')];
 
     %% Prior values, if needed
-    rPrior = sum(traing(:,12))/tra; wPrior = 1-rPrior;
+    rPrior = sum(traing(:,12))/tra; wPrior = ...
+      1-rPrior;
 
-    %% Naive (only 1 variable) Gaussian discrimination
+    %% Naive (only 1 variable) Gaussian 
+    %  discrimination
     m1 = mean(traing(traing(:,12)==1,8)); % Reds
     v1 = var(traing(traing(:,12)==1,8));
     m2 = mean(traing(traing(:,12)==0,8)); % Whites
     v2 = var(traing(traing(:,12)==0,8));
 
     % With no prior and with prior
-    nclass1 = (logDiscrNaive( valid(:,8),m1,m2,v1,v2,1,1)>0);
-    nclass2 = (logDiscrNaive( valid(:,8),m1,m2,v1,v2, ... 
-      rPrior,wPrior)>0);
+    nclass1 = (logDiscrNaive( ...
+      valid(:,8),m1,m2,v1,v2,1,1)>0);
+    nclass2 = (logDiscrNaive( ...
+      valid(:,8),m1,m2,v1,v2,rPrior,wPrior)>0);
 
     %% Gaussian discrimination
-    m1 = mean(traing(traing(:,12)==1,1:11)); % Reds
+    % Reds
+    m1 = mean(traing(traing(:,12)==1,1:11)); 
     v1 = cov(traing(traing(:,12)==1,1:11));
-    m2 = mean(traing(traing(:,12)==0,1:11)); % Whites
+    % Whites
+    m2 = mean(traing(traing(:,12)==0,1:11)); 
     v2 = cov(traing(traing(:,12)==0,1:11));
 
-    gclass1=(1:val)'; gclass2=(1:val)'; % No prior and prior
+    % No prior and prior
+    gclass1=(1:val)'; gclass2=(1:val)'; 
     for i = 1:val
-        gclass1(i) = (logDiscrGauss(valid(i,1:11),m1,m2, ... 
-	  v1,v2,1,1)>0);
-        gclass2(i) = (logDiscrGauss(valid(i,1:11),m1,m2, ...
-	  v1,v2,rPrior,wPrior)>0);
+        gclass1(i) = (logDiscrGauss(valid(i,...
+	  1:11),m1,m2,v1,v2,1,1)>0);
+        gclass2(i) = (logDiscrGauss(valid(i,...
+	  1:11),m1,m2,v1,v2,rPrior,wPrior)>0);
     end 
     %% Linear discriminant
-    diskr = fitcdiscr(traing(:,1:11),traing(:,12), ...
-      'DiscrimType','Linear');
+    diskr = fitcdiscr(traing(:,1:11),...
+      traing(:,12),'DiscrimType','Linear');
     dclass=predict(diskr,valid(:,1:11));
 
     %% kNN, k=1 or k=3
@@ -1164,9 +1172,10 @@ for h=1:10
     kclass=predict(kNN,valid(:,1:11));
 
     %% Random forest 30
-    BaggedTreeEns = TreeBagger(200,traing(:,1:11), ...
-      traing(:,12),'NVarToSample',2);
-    [tclass,treeProbs]=predict(BaggedTreeEns,valid(:,1:11));
+    BaggedTreeEns = TreeBagger(200,traing(:,...
+      1:11),traing(:,12),'NVarToSample',2);
+    [tclass,treeProbs]=predict(BaggedTreeEns,...
+      valid(:,1:11));
     tclass = round(treeProbs(:,2));
     
     %% DUMMY
@@ -1238,24 +1247,27 @@ for h=1:10
 
     %% Set convenient training and validation sets
     training = winefacts(indices(1:tra),:);
-    validation = winefacts(indices(tra+1:tra+val),:);
+    validation = winefacts(...
+      indices(tra+1:tra+val),:);
 
     traing = [table2array(training(:,1:11)), ... 
-      strcmp(training.type, 'Red'), training.quality];
+      strcmp(training.type, 'Red'), ...
+      training.quality];
     valid = [table2array(validation(:,1:11)), ...
-      strcmp(validation.type, 'Red'), validation.quality];
+      strcmp(validation.type, 'Red'), ...
+      validation.quality];
 
     %% Ultimately naive prediction
     nclass = ones(val,1)*4;
     
     %% Linear discriminant
-    diskr = fitcdiscr(traing(:,1:11),traing(:,13), ...
-      'DiscrimType','Linear');
+    diskr = fitcdiscr(traing(:,1:11),...
+      traing(:,13),'DiscrimType','Linear');
     dclass=predict(diskr,valid(:,1:11));
 
     %% Quadratic discriminant
-    qdiskr = fitcdiscr(traing(:,1:11),traing(:,13), ...
-      'DiscrimType','pseudoQuadratic');
+    qdiskr = fitcdiscr(traing(:,1:11),...
+      traing(:,13),'DiscrimType','pseudoQuadratic');
     qdclass = predict(qdiskr,valid(:,1:11));
     
     %% SVM
@@ -1277,7 +1289,8 @@ for h=1:10
     BaggedTreeEns = TreeBagger(1000, ...
       traing(:,1:11),traing(:,13), ...
       'NVarToSample',2,'Method','regression');    
-    trclass=round(predict(BaggedTreeEns,valid(:,1:11)));
+    trclass=round(predict(BaggedTreeEns,...
+      valid(:,1:11)));
         
     %% Least squares, regression
     w = lscov(traing(:, 1:11), traing(:, 13));
