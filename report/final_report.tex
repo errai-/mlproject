@@ -68,15 +68,15 @@
 
 \begin{abstract}
 % myöskin 2/40 p, 100-200 sanaa
-The type and quality of wines is to be predicted using machine learning techniques. The prediction
-of type is a pure classification problem, but the prediction of quality can be viewed either as
-a classification or a regression problem. Various classification algorithms are equipped
-for the analyses of the problems, as well as regression algorithms that are used for the study
-of the quality. It turns out that the prediction of the type is a problem that can be solved
-with an excellent accuracy. A hybrid model is constructed for making the final predictions
-of the type. On the contrary, determining the quality of a wine is challenging. Different
-algorithms are tested out and the final result is obtained using only one learning
-algorithm. The obtained model performs somewhat well, but there is room for optimization. 
+The type and quality of wines is predicted using machine learning techniques. Predicting
+the type is a pure classification problem, but the prediction of quality can be viewed either as
+a classification or a regression problem. Various classification and regression algorithms
+are used for analyzing the problems.
+It turns out that predicting the type is a problem that can be solved
+with very good accuracy. A hybrid model is constructed for making the final wine type predictions.
+On the contrary, determining the quality of a wine is more challenging. Different
+algorithms are evaluated and the final result is obtained using only one learning
+algorithm. The obtained model performs somewhat well, but there is room for more optimization. 
 The results are satisfactory, but this kind of a machine learning problem provides a source
 of endless study.
 
@@ -135,29 +135,29 @@ In general, this kind of a difficult problem is good for benchmarking machine le
 % Methods used to conduct your experiment
 % Concept-level: Methods/algos and modifications to these
 
-For predicting the behavior of the wine data multiple machine learning methods are equipped.
-To some extent the same classification algorithms with minor differences are used for both
-the analyses. Additionally, to augur the 
-quality also regression algorithms are utilized. The basic properties of the used algorithms
-are described in this section. The theoretical background of most of the algorithms can be found
-in a basic reference, such as Ref. \cite{Alpaydin}. 
+Multiple machine learning methods are used for predicting the behavior of the wine data.
+To some extent, the same classification algorithms are used for both analyses, with only minor differences.
+Additionally, regression algorithms are used to predict the wine quality.
+The basic properties of the used algorithms are described in this section. 
+The theoretical background of most of the algorithms can be found
+in a basic reference, such as Alpaydin\cite{Alpaydin}. 
 
 \subsection{Classification}
 
 \subsubsection{Naive Gaussian discrimination} \label{method:naiivig}
 
 It is instructive to begin the analysis of the dataset with a simple
-learning algorithm. A most simple model always returns a constant value or
-class. A slightly more complicated simple model is provided by using only one of the eleven prediction variables. 
+learning algorithm. The most simple model always returns a constant value or
+class. A slightly more complicated, but still simple model is provided by using only one of the eleven predictor variables. 
 The initial hypothesis is that for some of the variables ($x$) all classes are somewhat
 normally distributed. It follows that by calculating the mean value 
 $\mu$ and variance $\sigma^2$ of each class using the training set, the probability distributions of 
-each class $k$ is obtained:
+each class $k$ are obtained:
 \begin{equation}
  p(x|\mu_k,\sigma_k) = \frac{1}{\sqrt{2\pi} \sigma_k} e^{-\frac{(x-\mu_k)^2}{2\sigma_k^2}}.
 \end{equation}
-This can be used directly as a likelihood function for the different classes. Also a Bayesian posterior
-can be developed:
+This can be used directly as a likelihood function for the different classes. A Bayesian posterior
+can also be developed:
 \begin{equation}\label{posterior}
  p(\mu_k,\sigma_k|x) \propto p(x|\mu_k,\sigma_k) p(\mu_k,\sigma_k),
 \end{equation}
@@ -168,7 +168,7 @@ class $j = k$:
  g_k(x) = \log \frac{p(\mu_k,\sigma_k|x)}{p(\mu_j,\sigma_j|x)}.
 \end{equation}
 The maximal $g_k(x)$ indicates the predicted class $k$. By simplifying Eq. \eqref{naiividiskr},
-it is obtained
+it is obtained that
 \begin{equation}\label{naiividiskr2}
  g_k(x) = \frac{(x-\mu_j)^2}{2\sigma_k^2}-\frac{(x-\mu_k)^2}{2\sigma_k^2} + 
  \log \frac{\sigma_j}{\sigma_k}.
@@ -236,21 +236,21 @@ within the $k$ nearest neighbours is $k_c$, the probability is simply
 
 \subsubsection{Linear discrimination}\label{method:ldiskr}
 
-Methods that rely on discrimination can model directly the class discriminants instead of
+Methods that rely on discrimination can directly model the class discriminants instead of
 the class probabilities. In linear discrimination the discriminant for a class $k$ is linear:
 \begin{equation}
  g_k(\v{x}) = \v{w}_k^T \v{x} + w_{k0}.
 \end{equation}
 The basic theory of linear discrimination is not deeper than this: the goal is to find such
 coefficients $\v{w}_k$, $w_{k0}$ that the classification error is minimal. This is
-done numerically for instance with the steepest descent algorithm. There are multiple 
-ways to perform the optimization. One example
-is logistic discrimination, in which the class probabilities are defined by a connection to the class
+done numerically, for instance using the steepest descent algorithm. There are multiple 
+ways to perform the optimization. One possibility
+is logistic discrimination, where the class probabilities are defined by a connection to the class
 probabilities.
 
 \subsubsection{Quadratic discrimination}\label{method:qdiskr}
 
-Quadratic discrimination is otherwise similar to linear discrimination, but it equips a quadratic discriminant function,
+Quadratic discrimination is otherwise similar to linear discrimination, but it utilizes a quadratic discriminant function,
 \begin{equation}
  g_k(\v{x}) = \v{x}^T \mathbf{W}_k \v{x} + \v{w}_k^T \v{x} + w_{k0}.
 \end{equation}
@@ -259,16 +259,16 @@ discriminants. Additional complexity brought by the quadratic form may be unnece
 
 \subsubsection{Support Vector Machine}\label{method:svm}
 
-Support vector machines are a variant of linear discrimination. If classes do not overlap, it finds
+Support vector machines are a variant of linear discrimination. If the classes do not overlap, it finds
 the separating hyperplanes between the classes that have the largest margins. These hyperplanes correspond 
 to linear discriminants. With overlapping classes, a penalty term is added to the solution in order
 to make the same approach work.
 
-\subsubsection{Random Forest}\label{method:randfor}
+\subsubsection{Random forest}\label{method:randfor}
 
-Random forest \cite{Forest} is an ensemble learning method that equips an ensemble of classification trees. Each tree 
-in the ensemble does classification using only a chosen number of input variables. This could be for
-instance the square root of the total amount of classification variables. For this kind of an ensemble
+Random forests are an ensemble learning method that utilizes an ensemble of classification trees\cite{Forest}. Each tree 
+in the ensemble does classification using only a chosen number of input variables. This could for
+instance be the square root of the total amount of classification variables. For this kind of an ensemble
 the trees themselves are usually unpruned ordinary classification trees.
 They use the given variables and split the branches until a desired amount of purity or other conditions
 are fulfilled. It is important that there is a sufficient amount of classification
@@ -282,8 +282,7 @@ does not perform optimally.
 The random forest algorithm can be used also for regression. In this case, the classification trees in the 
 ensemble are substituted with regression trees. A regression tree has leaves with constant values,
 since a typical tree cannot easily give continuous output. When an ensemble of regression trees is considered, the 
-situation is more complicated. The final output is averaged over many trees and thus it resembles
-more a continuous behavior.
+situation is more complicated. The final output is averaged over many trees, thus resembling a more continuous behavior.
 
 \subsubsection{Linear least squares}\label{method:leastsquare}
 
@@ -307,12 +306,12 @@ It can be shown that the optimal solution is given by
  \v{w} = (\mathbf{X}^T \mathbf{X})^{-1} \mathbf{X}^T y.
 \end{equation}
 
-\subsection{PCA}\label{method:pca}
+\subsection{Principal component analysis}\label{method:pca}
 
-Primary Component Analysis is a method that can be used with both classification and regression
+Principal Component Analysis is a method that can be used with both classification and regression
 problems. Effectively, it reduces the amount of variables that the predicted variable depends
-on. This can be useful, if some of the provided data is not at all useful in the analysis. On the other
-hand, it gives an effective method of graphical representation of the data. If the studied variable
+on. This can be useful if some of the provided data is not at all useful in the analysis. On the other
+hand, it provide an effective method for generating a graphical representation of the data. If the studied variable
 depends on over three dimensions, using PCA it can be projected to three or two dimensions.
 
 PCA itself relies on finding new variables that are responsible for most of the variance of the studied
@@ -330,7 +329,7 @@ to the chosen eigenvalues. This is the PCA-representation.
 \subsection{Combining learners}\label{method:combo}
 
 If many different learners with approximately equal performance are found, it is instructive
-to combine these to boost the performance. For this, many kinds of algorithms can be used
+to combine these to boost their performance. For this, many kinds of algorithms can be used
 but in this work a simple approach is taken. It is assumed that maximally three very good
 learning algorithms are chosen for the final model. With these algorithms, the probabilities
 of each class are calculated for each sample in the validation or testing set. The probabilities
@@ -359,7 +358,7 @@ The best weights are chosen by validation. With only two learning algorithms, on
 % No results here!
 
 To probe the data, at first simple algorithms are used for
-both the prediction tasks. This is a good way of keeping the analysis reasonable as
+both of the prediction tasks. This is a good way of keeping the analysis reasonable as
 the naive algorithms give a starting level for the required performance. If a hypothetically
 well-performing algorithm performs similarly as a naive algorithm, it can be rejected.
 
@@ -394,7 +393,7 @@ for studying, whether there is some useless variables in the given dataset. Addi
 data was sufficient.
 
 For evaluating the performance of different algorithms three methods are used. The 
-most basic measure is the total amount of false augurs, when the problem is treated as classification.
+most basic measure is the total amount of false predictions when the problem is treated as classification.
 It does not give a complete picture of the situation. One can for instance predict that all the samples 
 in the test data belong to one class. If
 this class has a high prior probability, a large amount of predictions should be correct. On the other hand, a simple algorithm
