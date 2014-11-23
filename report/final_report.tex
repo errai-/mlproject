@@ -99,7 +99,7 @@ This is realized by comparing the strengths and weaknesses of different machine 
 and statistical modeling algorithms when applied to the present data.
  
 All possible algorithms cannot be considered in these analyses. Nevertheless,
-a variety of methods is used. This is important when dealing with a randomly chosen dataset, since according to
+a variety of different methods is used. This is important when dealing with a randomly chosen dataset, since according to
 Wolpert \todo{\LaTeX-viittaus}, there is no simple way to predetermine which
 learning algorithm yields the best results with the data. It can be difficult to assess,
 which method has an inductive bias that corresponds best to the data.
@@ -107,12 +107,12 @@ which method has an inductive bias that corresponds best to the data.
 For the sake of diversity, the performance of both regression and classification algorithms is evaluated.
 However, the focus is on classification algorithms. 
 Both the prediction of the type and the quality of the wine can be considered
-classification problems, whereas only the quality can be studied also using regression. It is obvious that
-there is some correlation between qualities that differ only by one point. This implies that
+classification problems, whereas only the quality can be studied also using regression.
+There is obviously some correlation between qualities that differ only by one point, which implies that
 using regression is beneficial. On the other hand the integer presentation of the quality makes using regression cumbersome.
 
-The used dataset is derived from the so called \emph{Vinho verde} dataset by Cortez et al. \cite{CorCer09}.
-It consists of 6000 observations, each describing an individual wine. For each one of them, 11 variables are provided in addition
+The used dataset is derived from the so called \emph{Vinho verde} data by Cortez et al. \cite{CorCer09}.
+It consists of 6000 observations, each describing an individual wine. Values of 11 variables are provided in addition
 to the color and the quality of the wine: fixed acidity, volatile acidity, density, pH and amounts of citric acid, residual sugar, chlorides, 
 free sulfur dioxide, total sulfur dioxide, sulphates and alcohol in the wine. The type of each wine is either red or white 
 and the quality is an integer between 1 and 7. 5000 observations are used as training data, while the other 1000 are reserved for testing.
@@ -124,11 +124,9 @@ Being able to predict the quality of a wine without the need for a wine taster, 
 of the properties of a good wine induce much potential for profit. On the other hand, the problem of predicting
 the quality of a wine is intriguing from a machine learning perspective. The quality is determined by human taste,
 a very complex and subjective system, difficult to predict only by using a limited set of chemical properties.
-One more reason to explain the popularity of wine quality predictions is the fact that there is a lot of data
-on wines available on the Internet.
 
 The task is interesting, since it is twofold. Both a distinct physical property and an abstract, subjective property
-are to be predicted. The former should be relatively easily predictable, assuming that a sufficient set
+are to be predicted. The former should be relatively easy, assuming that a sufficient set
 of chemical properties is given. On the other hand, the latter can be very challenging.
 In general, this kind of a difficult problem is good for benchmarking machine learning algorithms.
  
@@ -159,12 +157,12 @@ each class $k$ is obtained:
  p(x|\mu_k,\sigma_k) = \frac{1}{\sqrt{2\pi} \sigma_k} e^{-\frac{(x-\mu_k)^2}{2\sigma_k^2}}.
 \end{equation}
 This can be used directly as a likelihood function for the different classes. Also a Bayesian posterior
-can be taken:
+can be developed:
 \begin{equation}\label{posterior}
  p(\mu_k,\sigma_k|x) \propto p(x|\mu_k,\sigma_k) p(\mu_k,\sigma_k),
 \end{equation}
 where $p(\mu_k,\sigma_k) = p(\theta_k)$ is obtained as the fraction of the class $k$ in the 
-training set. This can be transformed conveniently into a discriminant, by choosing a reference
+training set. The posterior can be transformed conveniently into a discriminant, by choosing a reference
 class $j = k$:
 \begin{equation}\label{naiividiskr}
  g_k(x) = \log \frac{p(\mu_k,\sigma_k|x)}{p(\mu_j,\sigma_j|x)}.
@@ -179,7 +177,7 @@ it is obtained
 \subsubsection{Multivariate Gaussian discrimination}\label{method:multig}
 
 The multivariate Gaussian discriminant operates analogically to the one-dimensional
-case, extending the discriminant function to eleven variables. It determines the class of a sample by
+one, extending the discriminant function to eleven variables. It determines the class of a sample by
 comparing the probabilities of it belonging to each class, when each
 class is modeled using a multivariate Gaussian distribution.
 
@@ -259,14 +257,14 @@ Quadratic discrimination is otherwise similar to linear discrimination, but it e
 Because of the quadratic form, the search for optimal discriminants is much more complicated than with linear
 discriminants. Additional complexity brought by the quadratic form may be unnecessary.
 
-\subsubsection{Support vector machine}\label{method:svm}
+\subsubsection{Support Vector Machine}\label{method:svm}
 
 Support vector machines are a variant of linear discrimination. If classes do not overlap, it finds
 the separating hyperplanes between the classes that have the largest margins. These hyperplanes correspond 
 to linear discriminants. With overlapping classes, a penalty term is added to the solution in order
 to make the same approach work.
 
-\subsubsection{Random forest}\label{method:randfor}
+\subsubsection{Random Forest}\label{method:randfor}
 
 Random forest \cite{Forest} is an ensemble learning method that equips an ensemble of classification trees. Each tree 
 in the ensemble does classification using only a chosen number of input variables. This could be for
@@ -274,7 +272,7 @@ instance the square root of the total amount of classification variables. For th
 the trees themselves are usually unpruned ordinary classification trees.
 They use the given variables and split the branches until a desired amount of purity or other conditions
 are fulfilled. It is important that there is a sufficient amount of classification
-trees in the ensemble. With a too small amount of trees sufficient statistics is not reached and the algorithm
+trees in the ensemble. With a too small amount of trees sufficient statistics are not reached and the algorithm
 does not perform optimally.
 
 \subsection{Regression}
@@ -284,8 +282,8 @@ does not perform optimally.
 The random forest algorithm can be used also for regression. In this case, the classification trees in the 
 ensemble are substituted with regression trees. A regression tree has leaves with constant values,
 since a typical tree cannot easily give continuous output. When an ensemble of regression trees is considered, the 
-situation is more complicated. The final output is averaged over many trees and thus the output resembles
-more a continuous behaviour.
+situation is more complicated. The final output is averaged over many trees and thus it resembles
+more a continuous behavior.
 
 \subsubsection{Linear least squares}\label{method:leastsquare}
 
@@ -318,7 +316,7 @@ hand, it gives an effective method of graphical representation of the data. If t
 depends on over three dimensions, using PCA it can be projected to three or two dimensions.
 
 PCA itself relies on finding new variables that are responsible for most of the variance of the studied
-variable. The greater the effect on the variance, the more the parameter explains the behaviour of the variable.
+variable. The greater the effect on the variance, the more the parameter explains the behavior of the variable.
 Mathematically, PCA studies the covariance matrix of the matrix that holds the training set samples of the 
 variables that are used to predict the variable of interest. The eigenvectors of the covariance matrix are
 the principal components. The corresponding eigenvalues indicate the relative fraction of variance that
@@ -362,7 +360,7 @@ The best weights are chosen by validation. With only two learning algorithms, on
 
 To probe the data, at first simple algorithms are used for
 both the prediction tasks. This is a good way of keeping the analysis reasonable as
-the hypothetically inferior algorithms give a starting level for the required performance. If a hypothetically
+the naive algorithms give a starting level for the required performance. If a hypothetically
 well-performing algorithm performs similarly as a naive algorithm, it can be rejected.
 
 For the actual analysis, matlab is used for the most part. It would be possible to implement these algorithms by hand,
@@ -376,36 +374,31 @@ Validation is done ten times using each partition once as a validation set, whil
 sections function as a training set. The mean error of the 10 different validations is used as a measure
 of goodness of an algorithm.
 
-Cross-validation can be a bit problematic if it is used both for choosing parameter values for a single algorithm (e.g., the value of $k$
-for the kNN-algorithm) and evaluating the goodness of the different algorithms. In such a case the choice of the parameter value makes the estimator
-of goodness biased, which is harmful when making decisions between the algorithms. However, with the given amount of data
-the 10-fold cross-validation is a good choice. Since $9/10$ of the whole training data is used as a training set at a time,
-the situation resembles that of the actual final training phase. While training the final algorithm, the whole training dataset
-is used. On the other hand, the small size of a single validation set is averaged out by considering all 10 different validation sets.
+Cross-validation can be a bit problematic if it is used both for choosing parameter values for algorithms (e.g., the value of $k$
+for the kNN-algorithm) and evaluating the goodness of the different algorithms. In such a case the choice of the parameter value can make the estimator
+of goodness biased, which is harmful when making objective decisions between the algorithms.
 
 \subsection{Algorithm evaluation}
 
 While using learning algorithms, type is not used as a predictor for quality and quality not for color.
-In principle, such a measure could be useful. If either quality or color was predicted very
-accurately, there would be new information in the second decision process.
-However, there is a great amount of uncertainty involved in using an already predicted value as a
-variable of the second learner. If a test set differs significantly from the training set, this could
-make the second algorithm perform poorly.
+If either quality or color was predicted very
+accurately, there could be some benefits in using the first predictions in the second decision process.
+However, there is a great amount of uncertainty involved in such a procedure.
+If a test set differs significantly from the training set, this could make the second algorithm perform poorly.
 
 Some of the algorithms are used for the study of both problems while others are only applied to one of them.
 Knowledge of chemistry or any other kind of preliminary knowledge of wines is not used. The tasks are treated purely as machine learning
-problems. The greatest external utility in this context is the set of the variables that is used for the predictions. 
+problems. The greatest external utility is the set of the variables that is used for the predictions. 
 PCA and similar methods are useful
 for studying, whether there is some useless variables in the given dataset. Additionally, the quality of the final testing results imply, whether the supplied
 data was sufficient.
 
 For evaluating the performance of different algorithms three methods are used. The 
 most basic measure is the total amount of false augurs, when the problem is treated as classification.
-This does not give a complete picture of the situation. For instance
-with classification problems one can predict that all the samples in the test data belong to one class. If
-this class has a high prior probability, it can be supposed that a large amount of predictions are correct.
-However, this is problematic, since only the members of one class are predicted correctly. A simple algorithm
-could give a similar error rate as the given naive assumption, but it would probably also have a non-zero success
+It does not give a complete picture of the situation. One can for instance predict that all the samples 
+in the test data belong to one class. If
+this class has a high prior probability, a large amount of predictions should be correct. On the other hand, a simple algorithm
+could give a similar error rate as this naive assumption, but it would probably also have a non-zero success
 rate for the other classes. This is preferable and hence a more complicated measure of goodness, \emph{f-score}, is used:
 \begin{equation}
  \text{f-score} = \frac{ 2 \times \text{precision} \times \text{recall} }{\text{precision} + \text{recall}}.
@@ -441,7 +434,7 @@ has its foundation in the fine structure of the wine.
 
 The initial model that is used for the type is one that predicts a constant type for the wines. 
 Since there are only two types available, this will by definition give an error rate that is below $50\%$. However,
-at least the f-score should be relatively low.
+the f-score should be relatively low.
 
 As a first proper algorithm we use the naive Gaussian estimate as described in section \ref{method:naiivig}. With this it is
 important to find a variable for which the types are somewhat distributed in the shape of a bell curve. The obtained 
@@ -450,27 +443,23 @@ multivariate Gaussian prediction, as shown in section \ref{method:multig}. This 
 Gaussian method even if the variables were not in general distributed in a Gaussian way. For both the multivariate
 and univariate Gaussian cases also Bayesian prior probabilities are applied.
 
-Thus, three initial methods are developed. None of these are actually expected to perform very well, since the inductive
-biases are significant. However, now a solid basis is set for a further analyses.
-
 \subsubsection{More involved classification methods}
 
 There is actually no good initial knowledge on what kind of a classifier
-would perform well in the given situation. Therefore, the algorithms have to be tested out. Here, some preliminary 
-pruning has been performed in order to obtain a diverse set of algorithms.
+would perform well in the given situation. Therefore, the algorithms have to be tested out.
 
-The linear discriminant method is used to make a somewhat generic prediction for the classification. This divides the variable space
-with hyperplanes, which separate each class to a confined area. While the algorithms of matlab are used, also a quadratic discriminant
-could be in principle equipped. In general, this is not that advisable because the full quadratic form adds much unnecessary complexity
+The linear discriminant method is used to make a somewhat generic prediction for the classification. While the 
+algorithms of matlab are used, also a quadratic discriminant
+could be in principle equipped. This is not that advisable because the full quadratic form adds much unnecessary complexity
 to the model.
 
-To contribute to the results of a linear discriminant, also a $k$ Nearest Neighbours -model is used. In this case it is important to choose
-a fitting value for the parameter $k$. The 10-fold cross-validation method is fitting for this choise. It should be noted that if the model
+To contribute to the results of a linear discriminant, a $k$ Nearest Neighbours -model is used. In this case it is important to choose
+a fitting value for the parameter $k$. The 10-fold cross-validation method is fitting for this choice. It should be noted that if the model
 tends to be optimal with small values of $k$, its probability-related features are diminished. As an extreme, with $k=1$ the class probabilities
 of a point in the test set are 0 or 100 $\%$. Probability-related properties are important while models are combined and thus also this aspect
 should be taken into account.
 
-As a last choice the Random Forest algorithm is used. It combines both ensemble methods and classification trees. For this algorithm both the size
+Also the Random Forest algorithm is used. For this algorithm both the size
 of the forest and the amount of parameters used for classification has to be chosen. The size of the forest means the amount of trees in the ensemble.
 Making this parameter larger is good for the results but it will increase the calculation time. For the amount of variables used in a single tree a
 value clearly smaller than 11 should be used. This means approximately 4 or less variables. In general, less variables can be good so that
@@ -479,10 +468,10 @@ with this algorithm matters related to computational time become important.
 
 \subsubsection{PCA}
 
-Primary component analysis can be useful in pre-processing data, at least if some \emph{unnecessary} data is given. Thus, it is good to check, whether
+Primary component analysis can be useful in pre-processing data, in case \emph{unnecessary} data is given. Thus, it is good to check, whether
 using it is beneficial with the current data. It can also depend on the algorithm, whether or not PCA gives enhanced results. The kNN-algorithm and random
 forest in general are friendly with a high dimensionality. Thus, a reduction in dimensionality may not be very helpful. On the contrary, the linear discriminant
-method may obtain significant advantage of having to use less dimensions. Thus, this method is tested with different amounts of projection dimensions.
+method may obtain significant advantage of having to use less dimensions. Thus, it is tested with different amounts of projection dimensions.
 
 \subsubsection{Combining algorithms}
 
@@ -503,7 +492,7 @@ Univariate classification is too simple to work well with seven classes.
 On the other hand a full multivariate classification is cumbersome to use and is not worth the 
 additional effort, since other algorithms are likely to work better.
 
-Various dicriminative methods are used: linear discrimination, as well as the support vector machine and quadratic discrimination. 
+Various discriminative methods are used: linear discrimination, as well as the support vector machine and quadratic discrimination. 
 It is instructive to probe different discrimination methods to determine whether they are useful in the current problem. 
 The quadratic discriminant could be helpful in this case because of the complexity of the problem.
 
@@ -512,7 +501,7 @@ differences when compared to the use of these algorithms in the case of type pre
 
 \subsubsection{Regression}
 
-While using regresion algorithms there are two relevant questions: how does a regression algorithm perform in the context
+While using regression algorithms there are two relevant questions: how does a regression algorithm perform in the context
 of regression and how does it perform in the context of classification. For the former, the additional score type was
 given. If a regression algorithm seems to perform generally well, it may be used for the final model.
 
@@ -520,13 +509,13 @@ The random forest algorithm is powerful and it can be applied also for regressio
 since the only difference to classification is that the final result is not an integer. The result is rounded to the nearest
 integer, to make it compatible with the true qualities.
 
-In addition, the least squares method is utilized, as shown in \ref{method:leastsquare}. This is somewhat compulsory, taking
+In addition, the least squares method is utilized, as shown in \ref{method:leastsquare}. This is compulsory, taking
 into account that the least squares method is very popular in regression applications.
 
 \subsubsection{PCA and Combining algorithms}
 
-Based on the type prediction PCA results, it is determined whether it is useful to use PCA 
-in this context. On the other hand, algorithm combination has the same rules as in the case of 
+Based on the type prediction PCA results, it is determined whether or not it is useful to use PCA 
+in this context. Moreover, algorithm combination has the same rules as in the case of 
 type. If there are algorithms that have a somewhat similar performance level, they should be
 combined. If one algorithm is clearly better than the others, it can be used alone for the final predictions.
 
@@ -548,7 +537,7 @@ combined. If one algorithm is clearly better than the others, it can be used alo
 % 4/80 p
 % Description of results with figures and tables
 
-The analyses of algorithmical performance were carried out so that the type was analyzed before the quality. The final learning algorithms
+The analyses of algorithmic performance were carried out so that the type was analyzed before the quality. The final learning algorithms
 were chosen by optimization among the used algorithms. Thus, there was \emph{communication} between obtaining results and enhancing the models.
 
 \subsection{Prediction of type}
@@ -585,7 +574,7 @@ that in testing there is no cross-validation loop.
 
 \subsubsection{kNN cross-validation}
 
-A cross-validation procedure was performed to find and optimal value for the parameter $k$ in the 
+A cross-validation procedure was performed to find an optimal value for the parameter $k$ in the 
 kNN -algorithm. Both the error rate and f-score were computed for each $k$. In general the value
 of $k$ is odd, so that there will not be votes that result into ties. The results are given in
 Fig. \ref{fig:knncrossval}.
@@ -623,7 +612,7 @@ are given in Fig. \ref{fig:RF1000crossval}.
 
 The effects of a PCA algorithm was tested on the given data with cross-validation. 
 For this analysis, linear discrimination was used. It was tested with all different
-amounts of PCA-components ($k$), to check, whether some of the given data is redundant.
+amounts of PCA-components ($k$) to check, whether some of the given data is redundant.
 The results are presented in Fig. \ref{fig:lindiscrpca}.
 
 \begin{figure}[H]
@@ -846,7 +835,7 @@ The general cross-validation results are given in Table \ref{table:color_validat
 rate is studied, the dummy model performed better than the univariate Gaussian estimator. However, when the more complex estimator (f-score) is used,
 also the one-dimensional Gaussian estimator gives better results than the naive model. In contrast to these simple models,
 the multivariate Gaussian estimator performed surprisingly well in terms of both the error rate and the f-score.
-However, it should be noted that this is not nearly optimal model for the data in use. The non-Gaussian behavior
+However, it should be noted that it is not nearly optimal model for the data in use. The non-Gaussian behavior
 of the data can be easily observed and therefore there is a strong inductive bias present. Both in the case of the
 multivariate and the single variable Gaussian estimator, using a prior was useful. This is not surprising, because
 with weaker models using a prior is likely to have a positive effect.
@@ -865,7 +854,7 @@ but the difference should not be large. As a curiosity, it is informative to obs
 f-score and 1 are close to each other, when the f-score is close to 1.
 
 While experimenting with these methods, it was observed that all of the more involved models performed quite well. Thus it was
-decided to combine all the three of them. There might be better ways to combine algorithms and at an error rate this low, it is
+decided to combine all the three of them. At an error rate this low, it is
 hard to have a significant enhancement shown in the final results. A cross-validation was performed to choose coefficients for
 the probabilities of these three model (random forest, kNN and linear discrimination). The (cross-validated) error rate for the final hybrid model
 is lower than that of any single model as well as the f-score.
@@ -885,10 +874,9 @@ errors can be always present for different reasons, even if the model was optima
 
 \subsection{Prediction of Quality}
 
-As it was originally hypothesized, determining the quality is a much more challenging task than the color prediction. This can be seen from Fig.
+The challenges of determining the quality can be seen from Fig.
 \ref{fig:quality_training_pca}, where the black dots mark a ranking 4, blue dots a lower ranking and red dots a higher ranking. There is not a
-very clear separation present in this figure between different sections, in contrast to the quality of wines. This augurs a troublesome
-process of method optimization.
+very clear separation present in this figure between different sections, in contrast to the quality of wines.
 
 It was necessary to find fitting parameters for the kNN algorithm and for the random forest algorithm. From Fig. \ref{fig:knnqcrossval}
 it can be seen that $k = 1$ would be the preferable parameter value in this case for kNN. This choice is not that good, if the algorithms are to be combined.
@@ -897,14 +885,14 @@ algorithm. Thus, it is sensible to choose initially $k = 1$ and make further con
 a forest of 1000 trees was chosen directly, to deal with the complexity. A cross-validation over variable-amounts was done
 and the results can be viewed in Fig. \ref{fig:RFq1000crossval}. Here it is obvious, that two variables in a tree gives the optimal results.
 
-This time only the dummy model was hypothetically worse than the others. There was no way to predict differences between the other models. The 
+This time only the dummy model was supposedly worse than the others. There was no way to predict differences between the other models. The 
 cross-validation errors are shown in Fig. \ref{table:quality_validation}. In terms of the error rate, the dummy model performed quite well, but its 
 f-score is very low. Many of the models were badly performing with the present problem. The linear least squares model was bad 
 in terms of f-score and error rate and also its mean square error is not exceptionally good. On the other hand, the random forest for regression
 had the second best performance. However, it was bested by the actual random forest algorithm in all the goodness measures. Thus, at least with
 the present level of analysis regression models were less favorable in all ways, and the problem can be safely done by classification.
 
-Only the linear discriminant of the methods involving dicrimination obtained an f-score greater than 0.5 and even this with a small marginal.
+Only the linear discriminant of the methods involving discrimination obtained an f-score greater than 0.5 and even this with a small marginal.
 Apparently the quadratic discrimination model was too complex and also the support vector machine was not of use in this case. It turns out 
 that only kNN with $k = 1$ can get somewhat close to the performance of the random forest algorithm for classification. Having this in mind,
 the kNN is incompatible for algorithm fusion, since $k = 1$ and the performance would be worse with for instance $k = 3$. Thus it seems that
@@ -918,7 +906,7 @@ $35 \%$ left in the data, but this is not disastrous with data that are this com
 
 \subsection{Final Remarks}
 
-In general the task of type prediction was completed well, including a small error rate. Similar results could have been
+In general the task of type prediction was completed well, with a small error rate. Similar results could have been
 achieved with other algorithms, but there is no reason to expect that they would have performed in a much better way. Even this task did not seem 
 to be that simple, since eleven variables are fully needed for this analysis. On the contrary, the task of predicting the quality was
 complicated. Even powerful algorithms were stuck with high error rates.
@@ -928,7 +916,7 @@ ensemble techniques to other algorithms, better result could be obtained. Still,
 as low error rates as in the case of type classification. This could be explained by many factors. For instance, it is possible that there was not 
 a sufficient amount of variables supplied. The human taste is complex and the requirement for more data could explain the quality
 of the results. On the other hand, it is possible that the quality ranking is not completely deterministic. The rankings are likely to be given by different
-groups of wine criticists and the view of ranking varies to some extent. It is also possible that due to the complexity of the human
+groups of wine tasters and the view of ranking varies to some extent. It is also possible that due to the complexity of the human
 taste, more involved methods would be necessary to obtain a lower error rate.
 
 The study was successful with the given tasks. A large variety of algorithms was tested out for the sake of diversity.
@@ -962,7 +950,8 @@ Triangles indicate failed predictions.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\textwidth]{colorpca/dummy}
-\caption{Color prediction results: dummy}
+\caption{Color prediction results: dummy model}
+\vspace{1.5mm}
 \includegraphics[width=0.5\textwidth]{colorpca/naive_noprior}
 \caption{Color prediction results: naive Gaussian, uniform prior}
 \includegraphics[width=0.5\textwidth]{colorpca/naive_prior}
@@ -985,10 +974,9 @@ Triangles indicate failed predictions.
 \centering
 \includegraphics[width=0.5\textwidth]{colorpca/knn5}
 \caption{Color prediction results: $5$ nearest neighbors}
-\vspace{4.1mm}
+\vspace{3.5mm}
 \includegraphics[width=0.5\textwidth]{colorpca/random_forest}
 \caption{Color prediction results: random forest}
-\vspace{4.1mm}
 \includegraphics[width=0.5\textwidth]{colorpca/cvv2f_f}
 \caption{Color prediction results: hybrid}
 
@@ -1004,7 +992,7 @@ triangle means that it was too low.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.5\textwidth]{rankpca/dummy}
-\caption{Quality prediction results: dummy}
+\caption{Quality prediction results: dummy model}
 \includegraphics[width=0.5\textwidth]{rankpca/lindiscr}
 \caption{Quality prediction results: linear discriminant}
 \end{figure}
@@ -1025,6 +1013,7 @@ triangle means that it was too low.
 \centering
 \includegraphics[width=0.5\textwidth]{rankpca/randomforest}
 \caption{Quality prediction results: random forest}
+\vspace{1.5mm}
 \includegraphics[width=0.5\textwidth]{rankpca/randomforestreg}
 \caption{Quality prediction results: random forest (regression)}
 \includegraphics[width=0.5\textwidth]{rankpca/ols}
